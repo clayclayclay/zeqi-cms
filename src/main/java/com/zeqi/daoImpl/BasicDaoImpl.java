@@ -17,7 +17,6 @@ import javax.transaction.Transactional;
  * Created by Max on 2016/4/11.
  */
 @Repository
-@Transactional
 public class BasicDaoImpl implements BasicDao {
 
 

@@ -1,0 +1,7 @@
+1: Could not obtain transaction-synchronized Session for current thread
+registry a bean "OpenSessionInViewFilter"
+
+2: Entity is not mapped
+LocalSessionFactoryBean.setPackagesToScan(env.getProperty("spring.jpa.properties.hibernate.entitymanager.packagesToScan"));
+
+3: 

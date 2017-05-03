@@ -2,6 +2,8 @@ package com.zeqi.daoImpl;
 
 import com.zeqi.dao.AuthDao;
 import com.zeqi.database.StudentAccount;
+import com.zeqi.database.StudentInfo;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -47,6 +49,9 @@ public class AuthDaoImpl implements AuthDao {
             List<StudentAccount> list = session.createQuery(hql).setString("username",username).list();
             if (list.size() >0) {
                 if (list.get(0).getPassword().equals(password)) {
+                	if (list.get(0).getStudentInfo().getHeadPic() == null) {
+                		list.get(0).getStudentInfo().setHeadPic("avatar/Pikachu.png");
+                	}
                     request.getSession().setAttribute("student_info", list.get(0).getStudentInfo());
                     request.getSession().setAttribute("student_account", list.get(0));
                     request.getSession().setAttribute("is_login",true);

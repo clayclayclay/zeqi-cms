@@ -5,6 +5,7 @@ import com.zeqi.database.StudentInfo;
 import com.zeqi.json.BasicJson;
 import com.zeqi.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
