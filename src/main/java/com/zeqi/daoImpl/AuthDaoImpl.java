@@ -50,7 +50,7 @@ public class AuthDaoImpl implements AuthDao {
             if (list.size() >0) {
                 if (list.get(0).getPassword().equals(password)) {
                 	if (list.get(0).getStudentInfo().getHeadPic() == null) {
-                		list.get(0).getStudentInfo().setHeadPic("avatar/Pikachu.png");
+                		list.get(0).getStudentInfo().setHeadPic("/avatar/Pikachu.png");
                 	}
                     request.getSession().setAttribute("student_info", list.get(0).getStudentInfo());
                     request.getSession().setAttribute("student_account", list.get(0));
@@ -61,6 +61,8 @@ public class AuthDaoImpl implements AuthDao {
                 else {
                     code = "01002";
                 }
+            	
+            	return "200";
             }
             else {
                 code = "01001";

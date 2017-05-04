@@ -7,6 +7,7 @@ import com.zeqi.entity.ArticleListInfoEntity;
 import com.zeqi.json.BasicJson;
 import com.zeqi.service.UserCenterService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
@@ -15,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Max on 2016/4/9.
@@ -24,7 +26,8 @@ import java.util.List;
  * 查看我的文章、查看我的朋友、查看已借书籍、上传相应文档、删除相应文档、修改账户密码
  */
 
-@RestController
+//@RestController
+@Controller
 @RequestMapping("/web")
 public class UserCenterController {
 
@@ -39,6 +42,7 @@ public class UserCenterController {
      * @return 返回相应登陆情况的json字符串
      */
     @RequestMapping(value = "/login", method = RequestMethod.POST)
+    @ResponseBody
     public BasicJson login(HttpServletRequest request, HttpServletResponse response) {
         BasicJson basicJson;
         String username = request.getParameter("username");
@@ -54,11 +58,14 @@ public class UserCenterController {
      * 数据： 用户个人基本信息
      */
     @RequestMapping(value = "/guy", method = RequestMethod.GET)
-    public ModelAndView getInfo(HttpServletRequest request) {
-        ModelAndView model = new ModelAndView("user_module/user_center");
+    public String getInfo(Map<String, Object> model, HttpServletRequest request) {
+//        ModelAndView model = new ModelAndView("user_module/user_center");
         StudentInfo studentInfo = (StudentInfo) request.getSession().getAttribute("student_info");
-        model.addObject("studentInfo", studentInfo);
-        return model;
+//        model.addObject("studentInfo", studentInfo);
+//        return model;
+    	model.put("studentInfo", studentInfo);
+//    	System.out.println("xxx");
+    	return "/user/user_center";
     }
 
 
