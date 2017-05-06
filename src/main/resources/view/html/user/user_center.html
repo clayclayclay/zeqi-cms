@@ -36,10 +36,13 @@
 							<!-- 头像下身份的表示，以及进入个人资料管理页面 -->
 							<a data-toggle="dropdown" class="dropdown-toggle" href="#"> <span
 								class="clear"> <span class="block m-t-xs"><strong
-										class="font-bold userName"><span th:text="${studentInfo.name}"></span>-<span th:text="${studentInfo.nickName}"></span></strong></span>
-									<span class="
-											text-muted text-xsblock"><small class="position">${studentInfo.position}</small><b
-												class="caret"></b></span></span></a>
+										class="font-bold userName"><span
+											th:text="${studentInfo.name}"></span>-<span
+											th:text="${studentInfo.nickName}"></span></strong></span> <span
+									class="
+											text-muted text-xsblock"><small
+										class="position"><span
+											th:text="${studentInfo.position}"></span></small><b class="caret"></b></span></span></a>
 
 							<!-- 点击身份以及头像弹出的页面 -->
 
@@ -266,5 +269,6 @@
 	<script src="/plugin/js/pace.min.js"></script>
 
 	<script src="/js/user/user_center.js"></script>
+
 </body>
 </html>

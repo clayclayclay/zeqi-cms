@@ -111,6 +111,7 @@ $(function () {
             dataIndex = $(this).data('index'),
             menuName = $.trim($(this).text()),
             flag = true;
+        alert(dataUrl);
         if (dataUrl == undefined || $.trim(dataUrl).length == 0)return false;
 
         // 选项卡菜单已存在

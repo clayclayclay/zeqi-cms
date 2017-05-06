@@ -64,8 +64,9 @@ public class UserCenterController {
 //        model.addObject("studentInfo", studentInfo);
 //        return model;
     	model.put("studentInfo", studentInfo);
+    	System.out.println(studentInfo.getPosition());
 //    	System.out.println("xxx");
-    	return "/user/user_center";
+    	return "user/user_center";
     }
 
 
@@ -77,11 +78,11 @@ public class UserCenterController {
      * 数据： 用户个人基本信息
      */
     @RequestMapping(value = "/guy/basicInfo", method = RequestMethod.GET)
-    public ModelAndView getInfo1(HttpServletRequest request) {
-        ModelAndView model = new ModelAndView("user_module/user_info");
+    public String getInfo1(Map<String, Object> model, HttpServletRequest request) {
+    	System.out.println("user_info");
         StudentInfo studentInfo = (StudentInfo) request.getSession().getAttribute("student_info");
-        model.addObject("studentInfo", studentInfo);
-        return model;
+        model.put("studentInfo", studentInfo);
+        return "user/user_info";
     }
 
     /**
