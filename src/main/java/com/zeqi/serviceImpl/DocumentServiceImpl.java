@@ -1,10 +1,13 @@
 package com.zeqi.serviceImpl;
 
-import com.zeqi.constant.ConstantPath;
 import com.zeqi.dao.BasicDao;
 import com.zeqi.database.Article;
 import com.zeqi.database.DocumentInfo;
 import com.zeqi.database.StudentInfo;
+import com.zeqi.dataconfig.ConstantPath;
+import com.zeqi.dataconfig.DocumentConfig;
+import com.zeqi.dto.ArticleIndexDTO;
+import com.zeqi.dto.DocumentEntityDTO;
 import com.zeqi.json.BasicJson;
 import com.zeqi.json.EntityJson;
 import com.zeqi.service.DocumentService;
@@ -18,7 +21,9 @@ import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -30,7 +35,8 @@ public class DocumentServiceImpl implements DocumentService {
 
     @Autowired
     private BasicDao basicDao;
-
+    @Autowired
+    private DocumentConfig documentConfig;
 
 
     /**
@@ -42,7 +48,6 @@ public class DocumentServiceImpl implements DocumentService {
     public BasicJson addDocument(MultipartHttpServletRequest multipartHttpServletRequest) {
 
         BasicJson basicJson = new BasicJson(false);
-        System.out.println("进入到service.addDocument() is called");
         Map<String,MultipartFile> fileMap = multipartHttpServletRequest.getFileMap();
         DocumentInfo  documentInfo;
 
@@ -53,8 +58,6 @@ public class DocumentServiceImpl implements DocumentService {
             return basicJson;
         }
 
-        //确定文件上传路径
-        String documentPath = ConstantPath.DOCUMENT_PHYSICAL_PATH;
 
         //遍历fileMap，获得MultipartFile文件对象
         for (String key : fileMap.keySet()) {
@@ -62,15 +65,18 @@ public class DocumentServiceImpl implements DocumentService {
             String fileName = file.getOriginalFilename();
             System.out.println(fileName);
             try {
-                FileUtils.copyInputStreamToFile(file.getInputStream(), new File(documentPath, fileName));
+                String nowTime = String.valueOf(new Date().getTime());
+                String prefix = fileName.split("\\.")[0];
+                String type = fileName.split("\\.")[1];
+                fileName = prefix + "-" + nowTime + "." + type;
+            	String uploadPath = this.getClass().getClassLoader().getResource(documentConfig.getResourceConfig().get("uploadDocumentPath")).getFile();
+                FileUtils.copyInputStreamToFile(file.getInputStream(), new File(uploadPath, fileName));
                 documentInfo = new DocumentInfo();
                 documentInfo.setDocumentName(fileName);
-                documentInfo.setDocumentPath(ConstantPath.DOCUMENT_URL +  fileName);
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                 String strDate = sdf.format(new Date());
-                documentInfo.setUploadTime(strDate);
-                documentInfo.setStuId(((StudentInfo) multipartHttpServletRequest.getSession().getAttribute("student_info")).getStuId());
-                documentInfo.setStuName(((StudentInfo) multipartHttpServletRequest.getSession().getAttribute("student_info")).getName());
+                documentInfo.setCreateTime(strDate);
+                documentInfo.setStudentInfo((StudentInfo) multipartHttpServletRequest.getSession().getAttribute("student_info"));
                 basicDao.save(documentInfo);
                 basicJson.setStatus(true);
                 basicJson.getErrMsg().setCode("200");
@@ -94,7 +100,7 @@ public class DocumentServiceImpl implements DocumentService {
     public BasicJson deleteDocument(String[] documentId) {
         BasicJson basicJson = new BasicJson(false);
         boolean isDelete;
-        isDelete = basicDao.delete(documentId, "DocumentInfo");
+        isDelete = basicDao.delete(documentId, DocumentInfo.class);
         if (isDelete) {
             basicJson.setStatus(true);
             basicJson.getErrMsg().setCode("200");
@@ -120,30 +126,39 @@ public class DocumentServiceImpl implements DocumentService {
      */
     @Override
     @SuppressWarnings("unchecked")
-    public BasicJson getDocumentList(String[] pageInfo) {
-        BasicJson basicJson = new BasicJson(false);
-        List<DocumentInfo> documentInfoList = (List<DocumentInfo>) basicDao.getAllByPage("DocumentInfo", pageInfo, true, "uploadTime");
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        for (DocumentInfo documentInfo : documentInfoList) {
-            try {
-                documentInfo.setUploadTime(sdf.format(sdf.parse(documentInfo.getUploadTime())));
-            } catch (ParseException e) {
-                basicJson.setStatus(false);
-                basicJson.getErrMsg().setCode("03003");
-                basicJson.setJsonStr("获取失败");
-                return basicJson;
-            }
-        }
-        basicJson.setStatus(true);
-        basicJson.getErrMsg().setCode("200");
-        basicJson.getErrMsg().setMessage("获取成功");
-        EntityJson<DocumentInfo> documentInfoEntityJson = new EntityJson<DocumentInfo>();
-        documentInfoEntityJson.setEntityList(documentInfoList);
-        Double totalPageDouble = Double.valueOf(String.valueOf(getDocumentNum()));
-        Double requestPageNumDouble = Double.valueOf(pageInfo[1]);
-        int pageNum = ((Double)Math.ceil(totalPageDouble / requestPageNumDouble)).intValue();
-        documentInfoEntityJson.setPage(pageNum);
-        basicJson.setJsonStr(documentInfoEntityJson);
-        return basicJson;
+    public Map<String, Object> getDocumentList(String page) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		List<DocumentInfo> documentInfoList;
+		int maxResults = Integer.valueOf(documentConfig.getPaging().get("perPageArticleNum"));
+		int firstResult = (Integer.valueOf(page) - 1) * maxResults;
+		documentInfoList = (List<DocumentInfo>) basicDao.paginationQuery(firstResult, maxResults, DocumentInfo.class);
+		List<DocumentEntityDTO> documentEntityDTOList = new ArrayList<DocumentEntityDTO>();
+		for (DocumentInfo documentInfo : documentInfoList) {
+			DocumentEntityDTO documentEntityDTO = new DocumentEntityDTO();
+			documentEntityDTO.setId(documentInfo.getId());
+			documentEntityDTO.setDownloadUrl(documentConfig.getApiConfig().get("") + documentInfo.getDocumentName());
+			String prefix = documentInfo.getDocumentName().split("-")[0];
+			String suffix = documentInfo.getDocumentName().split("-")[1];
+			String type = suffix.split("\\.")[1];
+			String documentName = prefix + type;
+			documentEntityDTO.setDocumentName(documentName);
+			documentEntityDTO.setStuName(documentInfo.getStudentInfo().getName());
+			documentEntityDTO.setUploadTime(documentInfo.getCreateTime());
+			documentEntityDTOList.add(documentEntityDTO);
+		}
+		Double documentNum = Double.valueOf(basicDao.getTotalCount(DocumentInfo.class));
+		Double perPageDocumentNum = Double.valueOf(maxResults);
+		int totalPages = ((Double) Math.ceil(documentNum / perPageDocumentNum)).intValue();
+		Map<String, String> documentConfig = new HashMap<String, String>();
+		documentConfig.put("currentPage", page);
+		documentConfig.put("totalPages", String.valueOf(totalPages));
+		documentConfig.put("downloadDocumentPath", this.documentConfig.getResourceConfig().get("downloadDocumentPath"));
+		documentConfig.put("getDocumentsUrl", this.documentConfig.getResourceConfig().get("getDocumentsUrl"));
+		documentConfig.put("postDocumentUrl", this.documentConfig.getResourceConfig().get("postDocumentUrl"));
+		documentConfig.put("manageDocumentsUrl", this.documentConfig.getResourceConfig().get("manageDocumentsUrl"));
+		documentConfig.put("deleteDocumentUrl", this.documentConfig.getResourceConfig().get("deleteDocumentUrl"));
+		map.put("documentDTOList", documentEntityDTOList);
+		map.put("documentConfig", documentConfig);
+		return map;
     }
 }

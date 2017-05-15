@@ -1,7 +1,8 @@
 package com.zeqi.interceptor;
 
 import com.zeqi.database.StudentInfo;
-import com.zeqi.positionEnum.Position;
+import com.zeqi.dataenum.Position;
+
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;

@@ -201,7 +201,7 @@ $().ready(function(){
 	}
 	$(function(){
 
-		var $el = $( '#wi-el' ),
+		var $el = $( '#wi-el' );
 			windy = $el.windy( {
 				// rotation and translation boundaries for the items transitions
 				boundaries : {

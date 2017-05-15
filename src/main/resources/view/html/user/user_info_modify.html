@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>修改个人信息</title>
+<meta content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="renderer" content="webkit" />
+<meta name="keywords" content="择栖管理后台" />
+<meta name="description" content="择栖工作室nb" />
+<link rel="shortcut icon" href="/img/index/logo.jpg" />
+<link href="/css/basic/bootstrap.min.css" rel="stylesheet" />
+<link href="/css/basic/font-awesome.min.css" rel="stylesheet" />
+<link href="/css/basic/animate.css" rel="stylesheet" />
+<link href="/css/basic/style.css" rel="stylesheet" />
+<link href="/plugin/css/toastr/toastr.min.css" rel="stylesheet">
+<link href="/plugin/css/iCheck/custom.css" rel="stylesheet">
+</head>
+<body class="gray-bg">
+	<div class="wrapper wrapper-content animated fadeInRight">
+
+		<div class="row">
+
+			<div class="col-sm-8 col-sm-offset-1">
+				<div class="ibox float-e-margins">
+					<div class="ibox-title">
+						<h5>修改个人信息</h5>
+					</div>
+					<div class="ibox-content">
+						<form class="form-horizontal m-t" id="signupForm">
+							<div class="form-group">
+								<label class="col-sm-3 control-label">姓名：</label>
+								<div class="col-sm-8">
+									<input name="name" class="form-control inputVerify"
+										data-length="20" type="text" id="name"
+										th:value="${studentInfo.name}"> <span
+										class="help-block m-b-none checkSpan"><i
+										class="fa fa-exclamation-circle"></i>字数超过限制</span>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label">昵称：</label>
+								<div class="col-sm-8">
+									<input name="nick_name" class="form-control inputVerify valid"
+										data-length="20" type="text" aria-required="true"
+										aria-invalid="false" id="nick_name"
+										th:value="${studentInfo.nickName}"> <span
+										class="help-block m-b-none checkSpan"><i
+										class="fa fa-exclamation-circle"></i>字数超过限制</span>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label">性别</label>
+								<div class="col-sm-8 radio">
+									<label class="checkbox-inline i-checks"> <input
+										id="male" type="radio" value="男" name="gender" class="genders">
+										<i class="fa fa-mars"></i>
+									</label> <label class="checkbox-inline i-checks"> <input
+										id="female" type="radio" value="女" name="gender"
+										class="genders"><i class="fa fa-venus"></i>
+									</label>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label">E-mail：</label>
+								<div class="col-sm-8">
+									<input id="email_address" class="form-control inputVerify"
+										data-length="30" type="email"
+										th:value="${studentInfo.emailAddress}"> <span
+										class="help-block m-b-none checkSpan"><i
+										class="fa fa-exclamation-circle"></i>字数超过限制</span>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Tel：</label>
+								<div class="col-sm-8">
+									<input name="" class="form-control inputVerify"
+										data-length="11" type="text" id="tel"
+										th:value="${studentInfo.phone}"> <span
+										class="help-block m-b-none checkSpan"><i
+										class="fa fa-exclamation-circle"></i>字数超过限制</span>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label">地址：</label>
+								<div class="col-sm-8">
+									<input id="home_place" name="homePlace"
+										class="form-control inputVerify" data-length="8" type="text"
+										th:value="${studentInfo.homePlace}"> <span
+										class="help-block m-b-none"><i
+										class="fa fa-info-circle"></i> 请采用“四川－成都”的形式</span> <span
+										class="help-block m-b-none checkSpan"><i
+										class="fa fa-exclamation-circle"></i>字数超过限制</span>
+								</div>
+
+							</div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label">主攻方向：</label>
+								<div class="col-sm-8">
+									<input name="" class="form-control inputVerify"
+										data-length="30" type="text" id="love_diretion"
+										th:value="${studentInfo.loveDirection}"> <span
+										class="help-block m-b-none checkSpan"><i
+										class="fa fa-exclamation-circle"></i>字数超过限制</span>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label">年级：</label>
+								<div class="col-sm-8">
+									<select class="form-control m-b" name="account" id="grade"
+										th:value="${studentInfo.grade}">
+									</select>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label">专业：</label>
+								<div class="col-sm-8">
+									<select class="form-control m-b" name="account" id="major"
+										th:value="${studentInfo.major}">
+									</select>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label">职务：</label>
+								<div class="col-sm-8">
+									<select class="form-control m-b" name="account" id="position"
+										th:value="${studentInfo.position}">
+									</select>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label">个人介绍</label>
+								<div class="col-sm-10">
+									<input type="text" class="form-control" id="introduce"
+										th:value="${studentInfo.introduce}">
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="col-sm-8 col-sm-offset-3">
+									<button class="btn btn-primary" type="submit" id="submitView">更新</button>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="gohome">
+			<!-- href中为前往首页的地址 -->
+			<a class="animated bounceInUp" href="/web/guy/basicInfo"
+				title="返回个人资料" id="goback"> <i class="fa fa-reply"></i>
+			</a>
+		</div>
+	</div>
+
+	<!-- 全局js -->
+	<script src="/js/basic/jquery.min.js"></script>
+	<script src="/js/basic/bootstrap.min.js"></script>
+
+	<!-- 自定义js -->
+	<script src="/js/basic/content.js"></script>
+
+	<!-- jQuery Validation plugin javascript-->
+	<script src="/plugin/js/validate/jquery.validate.min.js"></script>
+	<script src="/plugin/js/validate/messages_zh.min.js"></script>
+
+
+	<script src="/plugin/js/toastr/toastr.min.js"></script>
+	<script src="/plugin/js/iCheck/icheck.min.js"></script>
+	<script th:inline="javascript">
+
+function optionGenerate(type, value, list) {
+	var select = document.getElementById(type);
+    for (var i = 0; i < list.length; i++) {
+        var option = document.createElement("option");
+        option.value = list[i];
+        option.text = list[i];
+        if (value == list[i]) {
+            option.selected = true;
+        }
+        select.appendChild(option);
+    }
+}
+
+
+
+
+
+    $(document)
+        .ready(
+            function() {
+                var gradeList = [[${userConfig.grade}]];
+                var grade = [[${studentInfo.grade}]];
+                
+                optionGenerate("grade", grade, gradeList);
+
+
+                var majorList = [[${userConfig.major}]];
+                var major = [[${studentInfo.major}]];
+                
+                optionGenerate("major", major, majorList);
+                
+                var positionList = [[${userConfig.position}]];
+                var position = [[${studentInfo.position}]];
+                
+                optionGenerate("position", position, positionList);
+                
+              var gender = [[${studentInfo.gender}]];
+                
+                switch (gender) {
+                    case '男':
+                        var genderSetting = document.getElementById("male");
+                        genderSetting.checked = true;
+                        break;
+                    case '女':
+                        var genderSetting = document.getElementById("female");
+                        genderSetting.checked = true;
+                        break;
+                }
+
+
+                var isOk = false;
+                $('.i-checks').iCheck({
+                    checkboxClass: 'icheckbox_square-green',
+                    radioClass: 'iradio_square-green'
+                });
+
+
+                var inputVerifyNum = $(".inputVerify").length;
+                var inputVerify = new Array(inputVerifyNum);
+
+                for (var i = 0; i < inputVerifyNum; i++) {
+                    inputVerify[i] = true;
+                }
+
+
+                $("#submitView")
+                    .on(
+                        'click',
+                        function(event) {
+                            $(".inputVerify")
+                                .each(function(i) {
+                                    var valuesLength = $(this)
+                                        .val().length;
+                                    if (valuesLength > $(this)
+                                        .attr('data-length')) {
+                                        inputVerify[i] = false;
+                                    } else {
+                                        inputVerify[i] = true;
+                                    }
+                                });
+
+                            var flag = true;
+                            $(".inputVerify")
+                                .each(function(i) {
+                                    if (inputVerify[i] == false) {
+                                        flag = false;
+                                        $(this).nextAll(".checkSpan").css("display", "block");
+                                    } else {
+                                        $(this).nextAll(".checkSpan").css("display", "none");
+                                    }
+                                });
+                            if (!flag) {
+                                return false;
+                            }
+
+                            var name = $("#name").val();
+                            var nick_name = $("#nick_name")
+                                .val();
+                            var gender = $(
+                                    ".genders:checked")
+                                .val();
+                            var email_address = $(
+                                "#email_address").val();
+                            var phone = $("#tel").val();
+                            var grade = $("#grade").val();
+                            var major = $("#major").val();
+                            var position = $("#position")
+                                .val();
+                            var love_direction = $(
+                                "#love_diretion").val();
+                            var introduce = $("#introduce")
+                                .val();
+                            var home_place = $(
+                                "#home_place").val();
+                            var url = window.location.href;
+                            var num = url.lastIndexOf("/");
+                            var id = url.substring(num + 1,
+                                url.lenth);
+
+                            var josnfai = {
+                                name: name,
+                                nickName: nick_name,
+                                gender: gender,
+                                emailAddress: email_address,
+                                phone: phone,
+                                grade: grade,
+                                major: major,
+                                position: position,
+                                homePlace: home_place,
+                                loveDirection: love_direction,
+                                introduce: introduce
+                            };
+                            if (name == "" ||
+                                nick_name == "" ||
+                                gender == "" ||
+                                email_address == "" ||
+                                phone == "" ||
+                                grade == "" ||
+                                major == "" ||
+                                position == "" ||
+                                love_diretion == "" ||
+                                introduce == "") {
+                                toastr.error("孩纸，内容都要填哦～");
+                                return false;
+                            };
+
+                            $.ajax({
+                                    url: '/web/guy/',
+                                    type: 'put',
+                                    dataType: 'json',
+                                    data: JSON
+                                        .stringify(josnfai),
+                                    contentType: 'application/json; charset=UTF-8'
+                                })
+
+                                .done(
+                                    function(data) {
+                                        if (data.status == true) {
+                                            toastr
+                                                .success('信息修改成功');
+                                            var winparent = window.parent; //向外层iframe发送信息
+                                            var postdata = {
+                                                "origin": "modify",
+                                                "name": name,
+                                                "nick_name": nick_name,
+                                                "position": position
+                                            };
+                                            winparent
+                                                .postMessage(
+                                                    postdata,
+                                                    "*");
+                                            $(
+                                                    "#goback i")
+                                                .trigger(
+                                                    'click');
+
+                                        } else {
+                                            toastr
+                                                .error(data.errMsg.message);
+                                        }
+                                    })
+                                .fail(
+                                    function() {
+                                        toastr
+                                            .error("error");
+                                    })
+                                .always(
+                                    function() {
+                                        console
+                                            .log("complete");
+                                    });
+                            return false;
+                        });
+            });
+</script>
+</body>
+</html>

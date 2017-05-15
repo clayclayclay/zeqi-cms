@@ -3,13 +3,14 @@ package com.zeqi.service;
 import com.zeqi.database.Article;
 import com.zeqi.database.BookLoan;
 import com.zeqi.database.StudentInfo;
+import com.zeqi.dto.ArticleIndexDTO;
 import com.zeqi.database.StudentInfo;
-import com.zeqi.entity.ArticleListInfoEntity;
 import com.zeqi.json.BasicJson;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Max on 2016/4/9.
@@ -55,10 +56,10 @@ public interface UserCenterService {
 
     /**
      * 修改密码
-     * @param json
+     * @param map
      * @return
      */
-    BasicJson updatePassword(String json, HttpServletRequest request);
+    BasicJson updatePassword(Map<String, String> map, HttpServletRequest request);
 
     /**
      * 更新个人基本信息
@@ -73,7 +74,7 @@ public interface UserCenterService {
      * @param request
      * @return
      */
-    List<ArticleListInfoEntity> getArticleList(HttpServletRequest request);
+    List<Article> getArticleList(HttpServletRequest request);
 
     /**
      * 查看我所写的文章

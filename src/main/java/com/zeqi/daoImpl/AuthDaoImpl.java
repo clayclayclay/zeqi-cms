@@ -41,19 +41,22 @@ public class AuthDaoImpl implements AuthDao {
      * 102 密码错误
      */
     @Override
+    @SuppressWarnings("unchecked")
     public String login(HttpServletRequest request, String username,String password) {
         Session session = getSession();
         String code = "00111";
         try {
             String hql = "FROM StudentAccount s WHERE s.stuId=:username";
-            List<StudentAccount> list = session.createQuery(hql).setString("username",username).list();
+			List<StudentAccount> list = session.createQuery(hql).setString("username",username).list();
             if (list.size() >0) {
                 if (list.get(0).getPassword().equals(password)) {
                 	if (list.get(0).getStudentInfo().getHeadPic() == null) {
                 		list.get(0).getStudentInfo().setHeadPic("/avatar/Pikachu.png");
                 	}
+                	if (list.get(0).getStudentInfo().getBackgroundPic() == null) {
+                		list.get(0).getStudentInfo().setBackgroundPic("/background/zeqi.jpg");
+                	}
                     request.getSession().setAttribute("student_info", list.get(0).getStudentInfo());
-                    request.getSession().setAttribute("student_account", list.get(0));
                     request.getSession().setAttribute("is_login",true);
                     request.getSession().setMaxInactiveInterval(1200);
                     code = "200";

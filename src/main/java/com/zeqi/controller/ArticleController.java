@@ -1,22 +1,22 @@
 package com.zeqi.controller;
 
-import com.zeqi.database.Article;
 import com.zeqi.database.StudentInfo;
+import com.zeqi.dto.ArticleEntityDTO;
 import com.zeqi.json.BasicJson;
 import com.zeqi.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
+
+import java.util.Map;
 
 /**
  * Created by Max on 2016/5/31.
  */
 
-@RestController
+@Controller
 @RequestMapping("/web")
 public class ArticleController {
 
@@ -29,6 +29,7 @@ public class ArticleController {
      * @param request
      */
     @RequestMapping(value = "/article", method = RequestMethod.POST)
+    @ResponseBody
     public BasicJson addArticle(HttpServletRequest request) {
         BasicJson basicJson;
         basicJson = articleService.addArticle(request);
@@ -64,10 +65,10 @@ public class ArticleController {
      * @param request
      */
     @RequestMapping(value = "/article/{id}", method = RequestMethod.GET)
-    public BasicJson getArticle(@PathVariable int id, HttpServletRequest request) {
-        BasicJson basicJson;
-        basicJson = articleService.getArticle(id);
-        return basicJson;
+    public String getArticle(Map<String, Object> model, @PathVariable int id, HttpServletRequest request) {
+        ArticleEntityDTO articleEntityDTO = articleService.getArticle(id);
+        model.put("article", articleEntityDTO);
+        return "article/article";
     }
 
 
@@ -76,11 +77,12 @@ public class ArticleController {
      * @return
      */
     @RequestMapping(value = "/articles/{page}", method = RequestMethod.GET)
-    public BasicJson getArticleList(@PathVariable String page) {
-        BasicJson basicJson;
-        String[] pageInfo = page.split("&");
-        basicJson = articleService.getArticleList(pageInfo, false, null);
-        return basicJson;
+    public String getArticleList(Map<String, Object> model, @PathVariable String page) {
+    	Map<String, Object> map;
+    	map = articleService.getArticleList(page);
+        model.put("articleList", map.get("articleDTOList"));
+        model.put("articleConfig", map.get("articleConfig"));
+        return "article/article_list";
     }
 
     /**
@@ -88,10 +90,11 @@ public class ArticleController {
      * @return
      */
     @RequestMapping(value = "/articles/guy/{page}", method = RequestMethod.GET)
-    public BasicJson getArticleListInGuy(@PathVariable String page, HttpServletRequest request) {
-        BasicJson basicJson;
-        String[] pageInfo = page.split("&");
-        basicJson = articleService.getArticleList(pageInfo, true, ((StudentInfo) request.getSession().getAttribute("student_info")).getStuId());
-        return basicJson;
+    public String getArticleListInGuy(Map<String, Object> model, @PathVariable String page, HttpServletRequest request) {
+    	Map<String, Object> map;
+    	map = articleService.getArticleList(page, ((StudentInfo) request.getSession().getAttribute("student_info")).getStuId());
+        model.put("articleList", map.get("articleDTOList"));
+        model.put("articleConfig", map.get("articleConfig"));
+        return "article/article_list_guy";
     }
 }

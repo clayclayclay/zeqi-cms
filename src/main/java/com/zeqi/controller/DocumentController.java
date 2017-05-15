@@ -1,23 +1,25 @@
 package com.zeqi.controller;
 
-import com.zeqi.database.DocumentInfo;
 import com.zeqi.json.BasicJson;
 import com.zeqi.service.DocumentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.web.servlet.ModelAndView;
+
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 
 /**
  * Created by Max on 2016/11/12.
  */
-@RestController
+//@RestController
+@Controller
 @RequestMapping("/web")
 public class DocumentController {
 
@@ -32,6 +34,7 @@ public class DocumentController {
      * @return
      */
     @RequestMapping(value="/document", method= RequestMethod.POST)
+    @ResponseBody
     public BasicJson addDocument(HttpServletRequest request) {
         System.out.println(request.getSession().getAttribute("student_info"));
         System.out.println("收到文档上传请求：addDocument() is called");
@@ -51,6 +54,7 @@ public class DocumentController {
      * @return
      */
     @RequestMapping(value="/document/{id}", method=RequestMethod.DELETE)
+    @ResponseBody
     public BasicJson deleteDocument(@PathVariable String id, HttpServletRequest request) {
         String[] documentId = id.split("&");
         BasicJson basicJson;
@@ -63,10 +67,30 @@ public class DocumentController {
      * @return
      */
     @RequestMapping(value="/documents/{page}", method=RequestMethod.GET)
-    public BasicJson getDocumentList(@PathVariable String page) {
-        BasicJson basicJson;
-        String[] pageInfo = page.split("&");
-        basicJson = documentService.getDocumentList(pageInfo);
-        return basicJson;
+    public String getDocumentList(Map<String, Object> model, @PathVariable String page) {
+    	Map<String, Object> map;
+    	map = documentService.getDocumentList(page);
+        model.put("documentList", map.get("documentDTOList"));
+        model.put("documentConfig", map.get("documentConfig"));
+        return "document/document_list";
     }
+
+
+    @RequestMapping(value="/documents/guy/{page}", method=RequestMethod.GET)
+    public String mangeDocument(Map<String, Object> model, @PathVariable String page) {
+    	Map<String, Object> map;
+    	map = documentService.getDocumentList(page);
+        model.put("documentList", map.get("documentDTOList"));
+        model.put("documentConfig", map.get("documentConfig"));
+        return "document/document_mange";
+    }
+    
+    @RequestMapping(value="/document/{fileId}", method=RequestMethod.GET)
+    @ResponseBody
+    public ClassPathResource downloadDocument(@PathVariable String fileId) {
+    	return new ClassPathResource("/data/document/企业实习初期检查表（企业导师版）(附件1)-1494416832291.docx");
+    }
+    
+    
+    
 }

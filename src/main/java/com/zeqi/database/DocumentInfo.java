@@ -1,6 +1,8 @@
 package com.zeqi.database;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+
 import java.sql.Timestamp;
 
 /**
@@ -11,10 +13,8 @@ import java.sql.Timestamp;
 public class DocumentInfo {
     private int id;
     private String documentName;
-    private String documentPath;
-    private String uploadTime;
-    private String stuId;
-    private String stuName;
+    private String createTime;
+    private StudentInfo studentInfo;
 
     @Id
     @Column(name = "id")
@@ -29,6 +29,7 @@ public class DocumentInfo {
 
     @Basic
     @Column(name = "document_name")
+    @NotNull
     public String getDocumentName() {
         return documentName;
     }
@@ -37,67 +38,27 @@ public class DocumentInfo {
         this.documentName = documentName;
     }
 
-    @Basic
-    @Column(name = "document_path")
-    public String getDocumentPath() {
-        return documentPath;
-    }
-
-    public void setDocumentPath(String documentPath) {
-        this.documentPath = documentPath;
-    }
+   
 
     @Basic
-    @Column(name = "upload_time")
-    public String getUploadTime() {
-        return uploadTime;
+    @Column(name = "create_time")
+    @NotNull
+    public String getCreateTime() {
+        return createTime;
     }
 
-    public void setUploadTime(String uploadTime) {
-        this.uploadTime = uploadTime;
+    public void setCreateTime(String createTime) {
+        this.createTime = createTime;
     }
 
-    @Basic
-    @Column(name = "stu_id")
-    public String getStuId() {
-        return stuId;
-    }
+    @ManyToOne(cascade=CascadeType.MERGE)
+    @JoinColumn(name="stuId")
+    public StudentInfo getStudentInfo() {
+		return studentInfo;
+	}
 
-    public void setStuId(String stuId) {
-        this.stuId = stuId;
-    }
+	public void setStudentInfo(StudentInfo studentInfo) {
+		this.studentInfo = studentInfo;
+	}
 
-    @Basic
-    @Column(name = "stu_name")
-    public String getStuName() {
-        return stuName;
-    }
-
-    public void setStuName(String stuName) {
-        this.stuName = stuName;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        DocumentInfo that = (DocumentInfo) o;
-
-        if (id != that.id) return false;
-        if (documentName != null ? !documentName.equals(that.documentName) : that.documentName != null) return false;
-        if (documentPath != null ? !documentPath.equals(that.documentPath) : that.documentPath != null) return false;
-        if (uploadTime != null ? !uploadTime.equals(that.uploadTime) : that.uploadTime != null) return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = id;
-        result = 31 * result + (documentName != null ? documentName.hashCode() : 0);
-        result = 31 * result + (documentPath != null ? documentPath.hashCode() : 0);
-        result = 31 * result + (uploadTime != null ? uploadTime.hashCode() : 0);
-        return result;
-    }
 }

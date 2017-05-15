@@ -8,7 +8,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "student_info", schema = "", catalog = "zeqi")
 public class StudentInfo {
-    private String stuId;
+	private String stuId;
     private String name;
     private String gender;
     private String emailAddress;
@@ -28,12 +28,12 @@ public class StudentInfo {
     public String getStuId() {
         return stuId;
     }
-
+    
     public void setStuId(String stuId) {
-        this.stuId = stuId;
-    }
+		this.stuId = stuId;
+	}
 
-    @Basic
+	@Basic
     @Column(name = "name")
     public String getName() {
         return name;
@@ -163,49 +163,4 @@ public class StudentInfo {
         this.backgroundPic = backgroundPic;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        StudentInfo that = (StudentInfo) o;
-
-        if (backgroundPic != null ? !backgroundPic.equals(that.backgroundPic) : that.backgroundPic != null)
-            return false;
-        if (emailAddress != null ? !emailAddress.equals(that.emailAddress) : that.emailAddress != null) return false;
-        if (gender != null ? !gender.equals(that.gender) : that.gender != null) return false;
-        if (grade != null ? !grade.equals(that.grade) : that.grade != null) return false;
-        if (headPic != null ? !headPic.equals(that.headPic) : that.headPic != null) return false;
-        if (homePlace != null ? !homePlace.equals(that.homePlace) : that.homePlace != null) return false;
-        if (introduce != null ? !introduce.equals(that.introduce) : that.introduce != null) return false;
-        if (loveDirection != null ? !loveDirection.equals(that.loveDirection) : that.loveDirection != null)
-            return false;
-        if (major != null ? !major.equals(that.major) : that.major != null) return false;
-        if (name != null ? !name.equals(that.name) : that.name != null) return false;
-        if (nickName != null ? !nickName.equals(that.nickName) : that.nickName != null) return false;
-        if (phone != null ? !phone.equals(that.phone) : that.phone != null) return false;
-        if (position != null ? !position.equals(that.position) : that.position != null) return false;
-        if (stuId != null ? !stuId.equals(that.stuId) : that.stuId != null) return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = stuId != null ? stuId.hashCode() : 0;
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        result = 31 * result + (gender != null ? gender.hashCode() : 0);
-        result = 31 * result + (emailAddress != null ? emailAddress.hashCode() : 0);
-        result = 31 * result + (nickName != null ? nickName.hashCode() : 0);
-        result = 31 * result + (grade != null ? grade.hashCode() : 0);
-        result = 31 * result + (major != null ? major.hashCode() : 0);
-        result = 31 * result + (homePlace != null ? homePlace.hashCode() : 0);
-        result = 31 * result + (phone != null ? phone.hashCode() : 0);
-        result = 31 * result + (position != null ? position.hashCode() : 0);
-        result = 31 * result + (loveDirection != null ? loveDirection.hashCode() : 0);
-        result = 31 * result + (introduce != null ? introduce.hashCode() : 0);
-        result = 31 * result + (headPic != null ? headPic.hashCode() : 0);
-        result = 31 * result + (backgroundPic != null ? backgroundPic.hashCode() : 0);
-        return result;
-    }
 }

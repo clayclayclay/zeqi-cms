@@ -1,9 +1,10 @@
 package com.zeqi.serviceImpl;
 
-import com.zeqi.constant.ConstantPath;
 import com.zeqi.dao.BasicDao;
 import com.zeqi.database.Album;
 import com.zeqi.database.AlbumPicture;
+import com.zeqi.dataconfig.AlbumConfig;
+import com.zeqi.dataconfig.ConstantPath;
 import com.zeqi.json.BasicJson;
 import com.zeqi.json.EntityJson;
 import com.zeqi.json.PhotoJson;
@@ -32,7 +33,8 @@ public class AlbumServiceImpl implements AlbumService {
 
     @Autowired
     private BasicDao basicDao;
-
+    @Autowired
+    private AlbumConfig albumConfig;
 
     /**
      * 创建相册
@@ -47,7 +49,7 @@ public class AlbumServiceImpl implements AlbumService {
         album.setName(request.getParameter("albumName"));
         album.setDescription(request.getParameter("description"));
         Timestamp timestamp = new Timestamp(new Date().getTime());
-        album.setAlbumTime(timestamp.toString());
+        album.setCreateTime(timestamp.toString());
         boolean isCreated;
         isCreated = basicDao.save(album);
         if (isCreated) {
@@ -71,7 +73,7 @@ public class AlbumServiceImpl implements AlbumService {
     @Override
     public BasicJson deleteAlbum(String[] albumId) {
         BasicJson basicJson = new BasicJson(false);
-        boolean isDelete = basicDao.delete(albumId, new Album());
+        boolean isDelete = basicDao.delete(albumId, Album.class);
         boolean isPhotoDelete = basicDao.deleteById("AlbumPicture", "albumId", albumId);
         System.out.println("删除照片状态" + isPhotoDelete);
         if (isDelete && isPhotoDelete) {
@@ -93,13 +95,13 @@ public class AlbumServiceImpl implements AlbumService {
      */
     @Override
     @SuppressWarnings("unchecked")
-    public BasicJson getAlbumList(String[] pageInfo) {
+    public BasicJson getAlbumList(String page) {
         BasicJson basicJson = new BasicJson(false);
-        List<Album> albumList = (List<Album>) basicDao.getAllByPage("Album", pageInfo, true, "albumTime");
+        List<Album> albumList = (List<Album>) basicDao.getAllByPage("Album", page, albumConfig.getPerPageAlbumNum(), true, "albumTime");
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         for (Album album : albumList) {
             try {
-                album.setAlbumTime(sdf.format(sdf.parse(album.getAlbumTime())));
+                album.setCreateTime(sdf.format(sdf.parse(album.getCreateTime())));
             } catch (ParseException e) {
                 basicJson.setStatus(false);
                 basicJson.getErrMsg().setCode("05003");
@@ -113,7 +115,7 @@ public class AlbumServiceImpl implements AlbumService {
         EntityJson<Album> documentInfoEntityJson = new EntityJson<Album>();
         documentInfoEntityJson.setEntityList(albumList);
         Double totalPageDouble = Double.valueOf(String.valueOf(getAlbumNum()));
-        Double requestPageNumDouble = Double.valueOf(pageInfo[1]);
+        Double requestPageNumDouble = Double.valueOf(page);
         int pageNum = ((Double) Math.ceil(totalPageDouble / requestPageNumDouble)).intValue();
         documentInfoEntityJson.setPage(pageNum);
         basicJson.setJsonStr(documentInfoEntityJson);
@@ -139,10 +141,10 @@ public class AlbumServiceImpl implements AlbumService {
             try {
                 FileUtils.copyInputStreamToFile(multipartFile.getInputStream(), new File(photoPath));
                 AlbumPicture albumPicture = new AlbumPicture();
-                albumPicture.setPicUrl(ConstantPath.ALBUM_PHOTO_URL + fileName);
+//                albumPicture.setPicUrl(ConstantPath.ALBUM_PHOTO_URL + fileName);
                 Timestamp timestamp = new Timestamp(new Date().getTime());
-                albumPicture.setPhotoTime(timestamp.toString());
-                albumPicture.setAlbumId(Integer.valueOf(albumId));
+//                albumPicture.setPhotoTime(timestamp.toString());
+//                albumPicture.setAlbumId(Integer.valueOf(albumId));
                 basicDao.save(albumPicture);
                 photoUrlList.add(ConstantPath.ALBUM_PHOTO_URL + fileName);
                 basicJson.setStatus(true);
@@ -169,7 +171,7 @@ public class AlbumServiceImpl implements AlbumService {
     @Override
     public BasicJson deletePhoto(String[] photoId) {
         BasicJson basicJson = new BasicJson(false);
-        boolean isDelete = basicDao.delete(photoId, "AlbumPicture");
+        boolean isDelete = basicDao.delete(photoId, AlbumPicture.class);
         if (isDelete) {
             basicJson.setStatus(true);
             basicJson.getErrMsg().setCode("200");
@@ -189,14 +191,14 @@ public class AlbumServiceImpl implements AlbumService {
      */
     @Override
     @SuppressWarnings("unchecked")
-    public BasicJson getPhotoList(String albumId, String[] pageInfo) {
+    public BasicJson getPhotoList(String albumId, String page) {
         BasicJson basicJson = new BasicJson(false);
         List<AlbumPicture> albumPictureList;
-        albumPictureList = (List<AlbumPicture>) basicDao.getAllByPageById("AlbumPicture", pageInfo, true, "photoTime", "albumId", albumId);
+        albumPictureList = (List<AlbumPicture>) basicDao.getAllByPageById("AlbumPicture", page, albumConfig.getPerPagePhotoNum(), true, "photoTime", "albumId", albumId);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         for (AlbumPicture albumPicture : albumPictureList) {
             try {
-                albumPicture.setPhotoTime(sdf.format(sdf.parse(albumPicture.getPhotoTime())));
+                albumPicture.setCreateTime(sdf.format(sdf.parse(albumPicture.getCreateTime())));
             } catch (ParseException e) {
                 basicJson.setStatus(false);
                 basicJson.getErrMsg().setCode("05006");
@@ -208,11 +210,11 @@ public class AlbumServiceImpl implements AlbumService {
         basicJson.getErrMsg().setCode("200");
         basicJson.getErrMsg().setMessage("获取成功");
         PhotoJson photoJson = new PhotoJson();
-        photoJson.setAlbumName(((Album) basicDao.get(new Album(), Integer.valueOf(albumId))).getName());
-        photoJson.setAlbumDescription(((Album) basicDao.get(new Album(), Integer.valueOf(albumId))).getDescription());
+        photoJson.setAlbumName(((Album) basicDao.get(Album.class, Integer.valueOf(albumId))).getName());
+        photoJson.setAlbumDescription(((Album) basicDao.get(Album.class, Integer.valueOf(albumId))).getDescription());
         photoJson.setEntityList(albumPictureList);
         Double totalPageDouble = Double.valueOf(String.valueOf(getPhotoNum(albumId)));
-        Double requestPageNumDouble = Double.valueOf(pageInfo[1]);
+        Double requestPageNumDouble = Double.valueOf(page);
         int pageNum = ((Double) Math.ceil(totalPageDouble / requestPageNumDouble)).intValue();
         photoJson.setPage(pageNum);
         basicJson.setJsonStr(photoJson);

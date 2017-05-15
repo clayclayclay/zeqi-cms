@@ -14,210 +14,200 @@
 <link href="/css/basic/font-awesome.min.css" rel="stylesheet"></link>
 <link href="/css/basic/animate.css" rel="stylesheet"></link>
 <link href="/css/basic/style.css" rel="stylesheet"></link>
-<link href="/plugin/css/toastr.min.css" rel="stylesheet"></link>
-<link href="/plugin/css/sweetalert.css" rel="stylesheet"></link>
+<link href="/plugin/css/toastr/toastr.min.css" rel="stylesheet"></link>
+<link href="/plugin/css/sweetalert/sweetalert.css" rel="stylesheet"></link>
 
 </head>
 <body class="gray-bg">
-<div class="wrapper wrapper-content">
-    <div class="row animated fadeInRight">
-        <div class="col-sm-6">
-            <div class="ibox float-e-margins">
-                <div class="ibox-title">
-                    <h5>个人资料</h5>
-                </div>
-                <div>
-                    <div class="ibox-content no-padding border-left-right">
-                        <a href="#modal-form" data-toggle="modal" style="display: block;" title="修改个性图片">
-                            <!-- 个人上传个性头像 -->
-                            <!--  
-                            <img alt="image" class="img-responsive backImg" th:src=${studentInfo.backgroundPic == null?"/user/background/zeqi.jpg" : studentInfo.backgroundPic}>
-                       -->
-                        </a>
-                    </div>
-                    <div class="ibox-content profile-content">
-                        <!-- 成员姓名 -->
-                        <h4><strong>${studentInfo.name}-${studentInfo.nickName} </strong>
-                        <!--  
+	<div class="wrapper wrapper-content">
+		<div class="row animated fadeInRight">
+			<div class="col-sm-6">
+				<div class="ibox float-e-margins">
+					<div class="ibox-title">
+						<h5>个人资料</h5>
+					</div>
+					<div>
+						<div class="ibox-content no-padding border-left-right">
+						
+						
+					
+							<a href="#modal-form" data-toggle="modal" style="display: block;"
+								title="修改个性图片"> <!-- 个人上传个性头像 --> 
+								<img alt="image"
+								class="img-responsive backImg"
+								th:src="${studentInfo.backgroundPic}">
+							</a>
+						</div>
+						
+						<div class="ibox-content profile-content">
+							<!-- 成员姓名 -->
+							<h4>
+								<strong><span th:text="${studentInfo.name}"></span>-<span
+									th:text="${studentInfo.nickName}"></span></strong>
+								<!--  
                             <i th:class="${studentInfo.gender} == '男  '? 'fa fa-mars' : 'fa fa-venus'  pull-right"></i>
                         -->
-                        </h4>
-                        <small class="text-muted">${studentInfo.grade}</small>
-                        <small class="text-muted">&nbsp;&nbsp;${studentInfo.major}</small>
-                        <small class="text-muted">&nbsp;&nbsp;${studentInfo.position}</small>
-                        <small class="text-muted">&nbsp;&nbsp;${studentInfo.homePlace}</small>
-                        <h5>主攻：
-                            <small>${studentInfo.loveDirection}</small>
-                        </h5>
-                        <h5>
-                            关于我
-                        </h5>
-                        <!-- 个人信息简介 -->
-                        <p>
-                            <%--会点前端技术，div+css啊，jQuery之类的，不是很精；热爱生活，热爱互联网，热爱新技术；有一个小的团队，在不断的寻求新的突破。为什么我这么帅，求求你告诉我为什么我这么帅，快快告诉我为什么啊为什么--%>
-                                ${studentInfo.introduce}
+							</h4>
+							<small class="text-muted"><span
+								th:text="${studentInfo.grade}"></span></small> <small class="text-muted">&nbsp;&nbsp;<span
+								th:text="${studentInfo.major}"></span></small> <small class="text-muted">&nbsp;&nbsp;<span
+								th:text="${studentInfo.position}"></span></small> <small
+								class="text-muted">&nbsp;&nbsp;<span
+								th:text="${studentInfo.homePlace}"></span></small>
+							<h5>
+								主攻： <small><span th:text="${studentInfo.loveDirection}"></span></small>
+							</h5>
+							<h5>关于我</h5>
+							<!-- 个人信息简介 -->
+							<p>
+								<span th:text="${studentInfo.introduce}"></span>
+							</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-3 col-md-offset-1">
+				<div class="ibox-content text-center">
+					<h1><span th:text="${studentInfo.name}"></span></h1>
+					<div class="m-b-sm">
+                    <img alt="image" class="img-circle userheadImg" th:src="${studentInfo.headPic}">
+					</div>
+					<p class="font-bold"><span th:text="${studentInfo.position}"></span></p>
+					<address>
+						<!-- 电话号码 -->
+						<abbr title="Phone">Tel:</abbr><span th:text="${studentInfo.phone}"></span>
+						<!-- 邮箱 -->
+						<br><span th:text="${studentInfo.emailAddress}"></span><br>
+					</address>
+				</div>
+			</div>
+			<a href="/web/guy/personInfo"><button class="btn btn-default "
+					type="button" id="modifyViews">
+					<i class="fa fa fa-paste"></i>&nbsp;&nbsp;编辑
+				</button></a>
+		</div>
+	</div>
+
+	<!-- 修改个性照片弹窗 -->
+	<div id="modal-form" class="modal fade" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<span class="m-t-none m-b"><strong>上传个性图片</strong></span>
+					<button class="close" type="button" data-dismiss="modal">
+						<i class="fa fa-remove"></i>
+					</button>
+				</div>
+				<div class="modal-body">
+					<div class="row animated fadeInRight">
+						<div class="col-sm-8 col-sm-offset-2">
+							<div class="addimg" title="修改个性头像">
+								<!-- 填入用户的头像，如果没有就使用初始头像 -->
+                            <img th:src="${studentInfo.backgroundPic}" class="userhead">
+							</div>
+							<input type="file" id="upimg" />
+							<button class="btn btn-success upbtn" type="button"
+								id="upBackImg">
+								<i class="fa fa-upload"></i>&nbsp;&nbsp;上传
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 
 
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3 col-md-offset-1">
-            <div class="ibox-content text-center">
-                <h1>${studentInfo.name}</h1>
-                <div class="m-b-sm">
-                <!-- 
-                    <img alt="image" class="img-circle userheadImg" src=${studentInfo.headPic == null?"/user/head/Pikachu.png" : studentInfo.headPic}>
-                 -->
-                </div>
-                <p class="font-bold">${studentInfo.position}</p>
-                <address>
-                    <!-- 电话号码 -->
-                    <abbr title="Phone">Tel:</abbr> ${studentInfo.phone}
-                    <!-- 邮箱 -->
-                    <br>
-                    ${studentInfo.emailAddress}<br>
-                </address>
-            </div>
-        </div>
-        <a href="/web/guy/personInfo"><button class="btn btn-default " type="button" id="modifyViews"><i class="fa fa fa-paste"></i>&nbsp;&nbsp;编辑</button></a>
-    </div>
-</div>
+	<!-- 全局js -->
+	<script src="/js/basic/jquery.min.js"></script>
+	<script src="/js/basic/bootstrap.min.js"></script>
 
-<!-- 修改个性照片弹窗 -->
-<div id="modal-form" class="modal fade" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <span class="m-t-none m-b"><strong>上传个性图片</strong></span>
-                <button class="close" type="button" data-dismiss="modal">
-                    <i class="fa fa-remove"></i>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="row animated fadeInRight">
-                    <div class="col-sm-8 col-sm-offset-2">
-                        <div class="addimg" title="修改个性头像">
-                            <!-- 填入用户的头像，如果没有就使用初始头像 -->
-                            <!--  
-                            <img src=${studentInfo.backgroundPic == null?"/user/background/zeqi.jpg" : studentInfo.backgroundPic} class="userhead">
-                       -->
-                        </div>
-                        <input type="file" id="upimg"/>
-                        <button class="btn btn-success upbtn" type="button" id="upBackImg">
-                            <i class="fa fa-upload"></i>&nbsp;&nbsp;上传
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+	<!-- 自定义js -->
+	<script src="/js/basic/content.js"></script>
 
+	<script src="/plugin/js/toastr/toastr.min.js"></script>
+	<script type="text/javascript"></script>
 
-<!-- 全局js -->
-<script src="/view/js/jquery.min.js?v=2.1.4"></script>
-<script src="/view/js/bootstrap.min.js?v=3.3.6"></script>
+	<script type="text/javascript">
+		$("#upimg")
+				.on("change", function() { //上传图片同时预览上传的图片
+							// Get a reference to the fileList
+							var files = !!this.files ? this.files : [];
+							var nextElement = $(".addimg").nextAll("i");
 
+							// If no files were selected, or no FileReader support, return
+							if (!files.length || !window.FileReader)
+								return;
 
+							// Only proceed if the selected file is an image
+							if (/^image/.test(files[0].type)) { //验证图片是否合格
 
-<!-- 自定义js -->
-<script src="/view/js/content.js?v=1.0.0"></script>
+								// Create a new instance of the FileReader
+								var reader = new FileReader();
 
+								// Read the local file as  DataURL
+								reader.readAsDataURL(files[0]);
 
+								// When loaded, set image data as background of div
+								checkOk = true;
 
-<script src="/view/js/plugins/toastr/toastr.min.js"></script>
-<script type="text/javascript"></script>
+								reader.onloadend = function() {
+									$(".addimg").empty();
+									$(
+											"<img src='"+this.result+"' class = 'img-responsive backImg' alt='image' >")
+											.appendTo($(".addimg"));
+								};
+								if (nextElement.hasClass('icon-remove')) {
+									nextElement.removeClass('icon-remove');
+								}
+								;
+								if (nextElement.hasClass('icon-ok')) {
+									nextElement.removeClass('icon-ok');
+								}
+								;
+								nextElement.addClass('icon-ok').attr({
+									title : ""
+								});
+							} else { //图片不合格
 
-<script type="text/javascript">
+								toastr.error("请选择上传jpg或png格式的图片");
+								return false;
+							}
 
-    $("#upimg").on("change", function(){                  //上传图片同时预览上传的图片
-        // Get a reference to the fileList
-        var files = !!this.files ? this.files : [];
-        var nextElement = $(".addimg").nextAll("i");
+						});
 
-        // If no files were selected, or no FileReader support, return
-        if (!files.length || !window.FileReader) return;
+		$(".addimg").click(function(event) {
+			$("#upimg").trigger('click');
+		});
 
-        // Only proceed if the selected file is an image
-        if (/^image/.test( files[0].type)){                     //验证图片是否合格
+		$("#upBackImg").click(function(event) { //点击上传图片
+			var file = $("#upimg")[0].files[0];
+			var formData = new FormData();
+			formData.append('logo_url', file);
 
-            // Create a new instance of the FileReader
-            var reader = new FileReader();
+			$.ajax({
+				url : '/web/guy/backgroundPic',
+				type : 'post',
+				dataType : 'json',
+				cache : false,
+				data : formData,
+				processData : false,
+				contentType : false
+			}).done(function(data) { //上传成功(需要接受来自后端的新的图片的url)
+				if (data.status == true) {
+					toastr.success('图片修改成功');
+					$(".close").trigger('click');
+					$(".backImg").attr('src', data.jsonStr);
+				} else {
+					toastr.error(data.errMsg.message);
+				}
+			}).fail(function() {
+				toastr.error('网络异常，图片修改失败');
+			}).always(function() {
+				console.log("complete");
+			});
 
-            // Read the local file as  DataURL
-            reader.readAsDataURL(files[0]);
-
-            // When loaded, set image data as background of div
-            checkOk = true;
-
-            reader.onloadend = function(){
-                $(".addimg").empty();
-                $("<img src='"+this.result+"' class = 'img-responsive backImg' alt='image' >").appendTo($(".addimg"));
-            };
-            if (nextElement.hasClass('icon-remove')) {
-                nextElement.removeClass('icon-remove');
-            };
-            if (nextElement.hasClass('icon-ok')) {
-                nextElement.removeClass('icon-ok');
-            };
-            nextElement.addClass('icon-ok').attr({title: ""});
-        }else{                                      //图片不合格
-
-                toastr.error("请选择上传jpg或png格式的图片");
-                return false;
-            }
-
-
-
-
-    });
-
-    $(".addimg").click(function(event) {
-        $("#upimg").trigger('click');
-    });
-
-
-
-
-
-    $("#upBackImg").click(function(event) {    //点击上传图片
-        var file=$("#upimg")[0].files[0];
-        var formData = new FormData();
-        formData.append('logo_url', file);
-
-
-        $.ajax({
-            url: '/web/guy/backgroundPic',
-            type: 'post',
-            dataType: 'json',
-            cache: false,
-            data:formData,
-            processData: false,
-            contentType: false
-        })
-                .done(function(data) {    //上传成功(需要接受来自后端的新的图片的url)
-                    if(data.status == true){
-                        toastr.success('图片修改成功');
-                        $(".close").trigger('click');
-                        $(".backImg").attr('src', data.jsonStr);
-                    }else{
-                        toastr.error(data.errMsg.message);
-                    }
-                })
-                .fail(function() {
-                    toastr.error('网络异常，图片修改失败');
-                })
-                .always(function() {
-                    console.log("complete");
-                });
-
-    });
-
-</script>
-
-
-
-
+		});
+	</script>
 </body>
 </html>

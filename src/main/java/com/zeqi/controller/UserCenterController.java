@@ -3,18 +3,23 @@ package com.zeqi.controller;
 import com.zeqi.database.BookLoan;
 import com.zeqi.database.StudentAccount;
 import com.zeqi.database.StudentInfo;
-import com.zeqi.entity.ArticleListInfoEntity;
+import com.zeqi.dataconfig.UserConfig;
+import com.zeqi.dto.ArticleIndexDTO;
 import com.zeqi.json.BasicJson;
 import com.zeqi.service.UserCenterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -33,6 +38,10 @@ public class UserCenterController {
 
     @Autowired
     private UserCenterService userCenterService;
+    
+    @Autowired
+    private UserConfig userConfig;
+    
 
 //    final static Logger logger = Logger.getLogger(UserCenterController.class);
 
@@ -48,6 +57,7 @@ public class UserCenterController {
         String username = request.getParameter("username");
         String password = request.getParameter("password");
         basicJson = userCenterService.login(request, username, password);
+        System.out.println(request.getServletContext().getRealPath("/"));
         return basicJson;
     }
 
@@ -59,13 +69,9 @@ public class UserCenterController {
      */
     @RequestMapping(value = "/guy", method = RequestMethod.GET)
     public String getInfo(Map<String, Object> model, HttpServletRequest request) {
-//        ModelAndView model = new ModelAndView("user_module/user_center");
         StudentInfo studentInfo = (StudentInfo) request.getSession().getAttribute("student_info");
-//        model.addObject("studentInfo", studentInfo);
-//        return model;
     	model.put("studentInfo", studentInfo);
     	System.out.println(studentInfo.getPosition());
-//    	System.out.println("xxx");
     	return "user/user_center";
     }
 
@@ -79,23 +85,11 @@ public class UserCenterController {
      */
     @RequestMapping(value = "/guy/basicInfo", method = RequestMethod.GET)
     public String getInfo1(Map<String, Object> model, HttpServletRequest request) {
-    	System.out.println("user_info");
         StudentInfo studentInfo = (StudentInfo) request.getSession().getAttribute("student_info");
         model.put("studentInfo", studentInfo);
         return "user/user_info";
     }
 
-    /**
-     * 作用：个人中心首页(iframe2页面)
-     * @return 返回视图(view)和数据(Model)对象
-     * 视图： user_module/user_index页面
-     * 数据： 用户个人基本信息
-     */
-    @RequestMapping(value = "/guy/index", method = RequestMethod.GET)
-    public ModelAndView turnGuyIndexPage() {
-        ModelAndView model = new ModelAndView("user_module/user_index");
-        return model;
-    }
 
     /**
      * 作用：在修改个人信息之前展示个人信息，这仅仅是一个页面的跳转
@@ -105,12 +99,15 @@ public class UserCenterController {
      * 数据： 用户个人基本信息
      */
     @RequestMapping(value = "/guy/personInfo", method = RequestMethod.GET)
-    public ModelAndView getPersonInfo(HttpServletRequest request) {
-        ModelAndView model = new ModelAndView("user_module/user_info_modify");
+    public String getPersonInfo(Map<String, Object> model, HttpServletRequest request) {
         StudentInfo studentInfo = (StudentInfo) request.getSession().getAttribute("student_info");
-        System.out.println("getPersonInfo() is called : " + studentInfo.getPosition());
-        model.addObject("studentInfo", studentInfo);
-        return model;
+        Map<String, List<String>> dataConfig = new HashMap<String, List<String>>();
+        dataConfig.put("grade", userConfig.getDataEnum().get("grade"));
+        dataConfig.put("major", userConfig.getDataEnum().get("major"));
+        dataConfig.put("position", userConfig.getDataEnum().get("position"));
+        model.put("studentInfo", studentInfo);
+        model.put("userConfig", dataConfig);
+        return "user/user_info_modify";
     }
 
 
@@ -120,8 +117,8 @@ public class UserCenterController {
      * @return
      */
     @RequestMapping(value = "/guy", method = RequestMethod.PUT)
+    @ResponseBody
     public BasicJson updateUserInfo(@RequestBody StudentInfo student, HttpServletRequest request) {
-        System.out.println("updateUserInfo() is called :" + student.getPosition());
         BasicJson basicJson;
         StudentInfo studentInfo = (StudentInfo) request.getSession().getAttribute("student_info");
         student.setStuId(studentInfo.getStuId());
@@ -143,10 +140,9 @@ public class UserCenterController {
      * 数据： 头像地址信息
      */
     @RequestMapping(value = "/guy/headPicView", method = RequestMethod.GET)
-    public ModelAndView DispatchHeadic(HttpServletRequest request) {
-        System.out.println("收到上传图片的请求");
-        ModelAndView modelAndView = new ModelAndView("user_module/user_head_img_modify");
-        return modelAndView;
+    public String DispatchHeadic(HttpServletRequest request) {
+//        return "user/user_avatar";
+    	return "article/imgResizer";
     }
 
 
@@ -156,6 +152,7 @@ public class UserCenterController {
      * @return 返回相应上传头像的json字符串
      */
     @RequestMapping(value = "/guy/headPic", method = RequestMethod.POST)
+    @ResponseBody
     public BasicJson uploadHeadPic(MultipartHttpServletRequest multipartHttpServletRequest) {
         BasicJson basicJson;
         basicJson = userCenterService.uploadHeadPic(multipartHttpServletRequest);
@@ -169,6 +166,7 @@ public class UserCenterController {
      * @return
      */
     @RequestMapping(value = "/guy/backgroundPic", method = RequestMethod.POST)
+    @ResponseBody
     public BasicJson uploadBackgroundPic(MultipartHttpServletRequest multipartHttpServletRequest) {
         System.out.println("Controller's uploadBackgroundPic() is called");
         BasicJson basicJson;
@@ -237,9 +235,10 @@ public class UserCenterController {
      * @return
      */
     @RequestMapping(value = "/guy/password", method = RequestMethod.PUT)
-    public BasicJson updatePassword(@RequestBody String json, HttpServletRequest request) {
-        BasicJson basicJson;
-        basicJson = userCenterService.updatePassword(json, request);
+    @ResponseBody
+    public BasicJson updatePassword(@RequestBody Map<String, String> map, HttpServletRequest request) {
+    	BasicJson basicJson = null;
+        basicJson = userCenterService.updatePassword(map, request);
         return basicJson;
     }
 
@@ -303,5 +302,14 @@ public class UserCenterController {
 //        logger.trace("Exiting application.");
 //        return basicJson;
 //    }
+    
+    @RequestMapping(value = "/test", method = RequestMethod.POST)
+    @ResponseBody
+    public void test(MultipartHttpServletRequest multipartHttpServletRequest) {
+    	MultipartFile file = multipartHttpServletRequest.getFile("croppedImage");
+    	System.out.println(file.getOriginalFilename());
+    }
+    
+
 }
 

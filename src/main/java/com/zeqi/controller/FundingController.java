@@ -65,8 +65,7 @@ public class FundingController {
     @RequestMapping(value = "/funding/{page}", method = RequestMethod.GET)
     public BasicJson getFunding(@PathVariable String page) {
         BasicJson basicJson;
-        String[] pageInfo = page.split("&");
-        basicJson = fundingService.getFundingList(pageInfo);
+        basicJson = fundingService.getFundingList(page);
         return basicJson;
     }
 

@@ -5,6 +5,7 @@ import com.zeqi.daoImpl.BasicDaoImpl;
 import com.zeqi.database.DocumentInfo;
 import com.zeqi.database.Funding;
 import com.zeqi.database.StudentInfo;
+import com.zeqi.dataconfig.FundingConfig;
 import com.zeqi.json.BasicJson;
 import com.zeqi.json.EntityJson;
 import com.zeqi.service.FundingService;
@@ -26,16 +27,17 @@ public class FundingServiceImpl implements FundingService {
 
     @Autowired
     private BasicDao basicDao;
-
+    @Autowired
+    private FundingConfig fundingConfig;
     /**
      * 作用：查看财务明细
      * @return
      */
     @Override
     @SuppressWarnings("unchecked")
-    public BasicJson getFundingList(String[] pageInfo) {
+    public BasicJson getFundingList(String page) {
         BasicJson basicJson = new BasicJson(false);
-        List<Funding> fundingList = (List<Funding>) basicDao.getAllByPage("Funding", pageInfo, true, "updateDate");
+        List<Funding> fundingList = (List<Funding>) basicDao.getAllByPage("Funding", page, fundingConfig.getPerPageFundingNum(), true, "updateDate");
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         for (Funding funding : fundingList) {
             try {
@@ -53,7 +55,7 @@ public class FundingServiceImpl implements FundingService {
         EntityJson<Funding> fundingEntityJson = new EntityJson<Funding>();
         fundingEntityJson.setEntityList(fundingList);
         Double totalPageDouble = Double.valueOf(String.valueOf(getFundingNum()));
-        Double requestPageNumDouble = Double.valueOf(pageInfo[1]);
+        Double requestPageNumDouble = Double.valueOf(page);
         int pageNum = ((Double)Math.ceil(totalPageDouble / requestPageNumDouble)).intValue();
         fundingEntityJson.setPage(pageNum);
         basicJson.setJsonStr(fundingEntityJson);
@@ -99,7 +101,7 @@ public class FundingServiceImpl implements FundingService {
     @Override
     public BasicJson updateFunding(int id, HttpServletRequest request) {
         BasicJson basicJson = new BasicJson(false);
-        Funding funding = (Funding) basicDao.get(new Funding(), id);
+        Funding funding = (Funding) basicDao.get(Funding.class, id);
         funding.setSpentMoney(request.getParameter("spentMoney"));
         funding.setCostUse(request.getParameter("costUse"));
         if (basicDao.save(funding)) {
@@ -123,7 +125,7 @@ public class FundingServiceImpl implements FundingService {
     @Override
     public BasicJson deleteFunding(String[] fundingSId) {
         BasicJson basicJson = new BasicJson(false);
-        if (basicDao.delete(fundingSId, "Funding")) {
+        if (basicDao.delete(fundingSId, Funding.class)) {
             basicJson.setStatus(true);
             basicJson.getErrMsg().setCode("200");
             basicJson.getErrMsg().setMessage("删除成功");

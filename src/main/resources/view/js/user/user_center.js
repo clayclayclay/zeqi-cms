@@ -41,6 +41,13 @@ $(document).ready(
 					function(event) {
 						var oldP = $("#oldPasswords").val();
 						var newP = $("#newPasswords").val();
+						
+						
+						var jsonObject = {
+								"oldPassword" : oldP,
+								"newPassword" : newP
+						};
+						var jsonStr = JSON.stringify(jsonObject);
 						if (isOk == false) {
 							if (oldP == "" || newP == ""
 									|| $("#checkPasswords").val() == "") {
@@ -53,11 +60,12 @@ $(document).ready(
 								url : "/web/guy/password",
 								type : 'PUT',
 								dataType : 'json',
-								// contentType:'json',
-								data : {
-									"oldPassword" : $("#oldPasswords").val(),
-									"newPassword" : $("#newPasswords").val()
-								}
+								contentType:'application/json',
+//								data : {
+//									"oldPassword" : oldP,
+//									"newPassword" : newP
+//								}
+								data: jsonStr
 							}).done(function(data) {
 								if (data.status == true) {
 									$(".close").trigger('click');
@@ -72,10 +80,7 @@ $(document).ready(
 								console.log("complete");
 							});
 
-						}
-						;
+						};
 						return false;
-
 					});
-
 		});

@@ -5,6 +5,7 @@ import com.zeqi.json.BasicJson;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Max on 2016/11/12.
@@ -15,7 +16,7 @@ public interface DocumentService {
 
     BasicJson deleteDocument(String[] documentId);
 
-    BasicJson getDocumentList(String[] pageInfo);
+    Map<String, Object> getDocumentList(String page);
 
     int getDocumentNum();
 }

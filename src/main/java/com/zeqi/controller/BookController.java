@@ -58,8 +58,7 @@ public class BookController {
     @RequestMapping(value = "/bookLoan/{page}", method = RequestMethod.GET)
     public BasicJson getBookLoanList(@PathVariable String page) {
         BasicJson basicJson;
-        String[] pageInfo = page.split("&");
-        basicJson = bookService.getBookLoanList(pageInfo, false, null);
+        basicJson = bookService.getBookLoanList(page, false, null);
         return basicJson;
     }
 
@@ -70,8 +69,7 @@ public class BookController {
     @RequestMapping(value = "/guy/bookLoan/{page}", method = RequestMethod.GET)
     public BasicJson getBookLoanListByGuy(@PathVariable String page, HttpServletRequest request) {
         BasicJson basicJson;
-        String[] pageInfo = page.split("&");
-        basicJson = bookService.getBookLoanList(pageInfo, true, ((StudentInfo) request.getSession().getAttribute("student_info")).getStuId());
+        basicJson = bookService.getBookLoanList(page, true, ((StudentInfo) request.getSession().getAttribute("student_info")).getStuId());
         return basicJson;
     }
 
@@ -117,8 +115,7 @@ public class BookController {
     @RequestMapping(value = "/book/{page}", method = RequestMethod.GET)
     public BasicJson getBookList(@PathVariable String page) {
         BasicJson basicJson;
-        String[] pageInfo = page.split("&");
-        basicJson = bookService.getBookList(pageInfo);
+        basicJson = bookService.getBookList(page);
         return basicJson;
     }
 }

@@ -1,6 +1,8 @@
 package com.zeqi.database;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+
 import java.sql.Timestamp;
 
 /**
@@ -28,6 +30,7 @@ public class Funding {
 
     @Basic
     @Column(name = "left_money")
+    @NotNull
     public String getLeftMoney() {
         return leftMoney;
     }
@@ -38,6 +41,7 @@ public class Funding {
 
     @Basic
     @Column(name = "spent_money")
+    @NotNull
     public String getSpentMoney() {
         return spentMoney;
     }
@@ -48,6 +52,7 @@ public class Funding {
 
     @Basic
     @Column(name = "cost_use")
+    @NotNull
     public String getCostUse() {
         return costUse;
     }
@@ -58,6 +63,7 @@ public class Funding {
 
     @Basic
     @Column(name = "update_date")
+    @NotNull
     public String getUpdateDate() {
         return updateDate;
     }
@@ -75,31 +81,5 @@ public class Funding {
 
     public void setUpdateDate(String updateDate) {
         this.updateDate = updateDate;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Funding funding = (Funding) o;
-
-        if (id != funding.id) return false;
-        if (costUse != null ? !costUse.equals(funding.costUse) : funding.costUse != null) return false;
-        if (leftMoney != null ? !leftMoney.equals(funding.leftMoney) : funding.leftMoney != null) return false;
-        if (spentMoney != null ? !spentMoney.equals(funding.spentMoney) : funding.spentMoney != null) return false;
-        if (updateDate != null ? !updateDate.equals(funding.updateDate) : funding.updateDate != null) return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = id;
-        result = 31 * result + (leftMoney != null ? leftMoney.hashCode() : 0);
-        result = 31 * result + (spentMoney != null ? spentMoney.hashCode() : 0);
-        result = 31 * result + (costUse != null ? costUse.hashCode() : 0);
-        result = 31 * result + (updateDate != null ? updateDate.hashCode() : 0);
-        return result;
     }
 }

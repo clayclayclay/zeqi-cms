@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>文档中心</title>
+<meta content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="renderer" content="webkit" />
+<meta name="keywords" content="择栖管理后台" />
+<meta name="description" content="择栖工作室nb" />
+<link rel="shortcut icon" href="/img/index/logo.jpg" />
+<link
+	href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css"
+	rel="stylesheet">
+<link href="/css/basic/bootstrap.min.css" rel="stylesheet" />
+<link href="/css/basic/font-awesome.min.css" rel="stylesheet" />
+<link href="/css/basic/animate.css" rel="stylesheet" />
+<link href="/css/basic/style.css" rel="stylesheet" />
+<link href="/plugin/css/toastr/toastr.min.css" rel="stylesheet">
+<link href="/plugin/css/sweetalert/sweetalert.css" rel="stylesheet">
+<style type="text/css">
+#upfile {
+	display: none;
+}
+
+#deleteButton {
+	display: none;
+}
+
+#cancelButton {
+	display: none;
+}
+
+.file:hover {
+	cursor: pointer;
+}
+
+.checked {
+	position: absolute;
+	right: 1px;
+	top: 1px;
+	color: green;
+}
+</style>
+
+</head>
+<body class="gray-bg">
+	<div class="wrapper wrapper-content">
+		<div class="row">
+			<div class="col-sm-3">
+				<div class="ibox float-e-margins">
+					<div class="ibox-content">
+						<div class="file-manager">
+							<strong>文档管理</strong>
+							<div class="hr-line-dashed"></div>
+							<button class="btn btn-primary btn-block" id="hybutton">上传文档</button>
+							<input type="file" name="" id="upfile">
+							<div class="hr-line-dashed"></div>
+							<button class="btn btn-primary btn-block" id="manageButton">管理文件</button>
+							<button class="btn btn-primary btn-block" id="deleteButton">删除选中文件</button>
+							<button class="btn btn-primary btn-block" id="cancelButton">取消删除操作</button>
+							<div class="clearfix"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-9 animated fadeInRight">
+				<div class="row">
+					<div class="col-sm-12 filecontainer">
+						<div class="file-box" th:each="document: ${documentList}">
+							<div class="file" th:value="${document.id}">
+								<span class="corner"></span>
+								<div class="icon">
+									<i class="fa fa-file"></i>
+								</div>
+								<!-- 文件名 -->
+								<div class="file-name">
+									<span th:text="${document.documentName}"></span> <br />
+									<!--  文件添加时间 -->
+									<small th:text="${document.uploadTime}"></small>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="btn-group col-sm-offset-4"></div>
+				</div>
+				<div class="col-sm-offset-4">
+					<div id="documentPaging"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<!-- 全局js -->
+	<script src="/js/basic/jquery.min.js"></script>
+	<script src="/js/basic/bootstrap.min.js"></script>
+	<!-- 自定义js -->
+	<script src="/js/basic/content.js"></script>
+
+	<script src="/plugin/js/toastr/toastr.min.js"></script>
+	<script src="/plugin/js/sweetalert.min.js"></script>
+	<script
+		src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+	<script
+		src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
+	<script
+		src="/plugin/bootstrap-pagination-plugin/build/bootstrap-paginator.min.js"></script>
+
+	<script th:inline="javascript">
+	
+  $(document).ready(function () {
+    $('.file-box').each(function () {
+      animationHover(this, 'pulse');
+    });
+
+    $("#manageButton").click(function(event) {     //点击管理文件按钮
+      $("#deleteButton").css({"display": "block"}); //删除文件按钮出现，管理文件按钮消失
+      $("#cancelButton").css({"display": "block"});//
+      $(this).css("display", "none");
+      $(".file").on('click' ,deleteFile);
+    });
+
+    function deleteFile(event) {            //标记用户想要删除的文档
+      if ($(this).hasClass('ischecked')) {   //查询该文件是否已经被选中
+        $(this).children('.checked').remove();
+        $(this).removeClass('ischecked');
+      }else{
+        $(this).addClass('ischecked');
+        $(this).append('<i class="fa fa-check-square checked"></i>');
+      }
+      return false;
+    };
+
+    $("#cancelButton").on('click',function (event) {    //取消删除文档操作
+      $("#deleteButton").css('display','none');
+      $(this).css('display','none');
+      $("#manageButton").css('display','block');
+      $(".ischecked").children('.checked').remove();
+      $(".ischecked").removeClass("ischecked");
+      $(".file").unbind('click', deleteFile);
+    })
+
+    $("#deleteButton").on('click', function(event) { //点击删除按钮进行删除
+      var checkedValue = new Array();
+      $(".ischecked").each(function(index, el) {      //将选中要删除的文件中文件对应标识取出
+        checkedValue[index] = $(this).attr("value");
+      });
+      var documentId = checkedValue.join("&");
+
+
+      swal({
+        title: "您确定要删除文件吗",
+        text: "删除后将无法恢复，请谨慎操作！",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#DD6B55",
+        confirmButtonText: "删除",
+        closeOnConfirm: false
+      }, function () {
+        $.ajax({        //给予后端要删除的文件的标识
+          url:  [[${documentConfig.deleteDocumentUrl}]]+ documentId,
+          type: 'delete',
+          dataType: 'json'
+        })
+                .done(function(data) {
+                  if(data.status == true){     //删除文档成功
+                    swal("删除成功！", "您已经永久删除了这条信息。", "success");
+                    $(".ischecked").remove();
+                    $("#deleteButton").css('display', 'none');
+                    $("#cancelButton").css('display', 'none');
+                    $("#manageButton").css('display', 'block');
+                    $(".file").unbind('click', deleteFile);
+
+                  }else{     //删除文档失败
+                    swal("删除失败！", data.errMsg.message, "error");
+                  }
+                })
+                .fail(function() {
+                  swal("删除失败！", "请检查网络情况", "error");
+                })
+                .always(function() {
+                  console.log("complete");
+                });
+
+      });
+
+    });
+
+    $("#hybutton").click(function(event) {    //虚拟上传文件按钮，点击触发input type=file，进行上传文件操作
+      $("#upfile").trigger('click');
+
+    });
+
+    $("#upfile").change(function(){
+      var formData = new FormData();
+      var isSuppot = false;
+      formData.append('document', $("#upfile")[0].files[0]);
+      var filename = $("#upfile")[0].files[0].name;  //获得上传的名称
+      if(filename.lastIndexOf('.') == -1){
+        toastr.error("还未选择上传的文件");
+        return false;
+      }
+        var fileType = (filename.substring(filename.lastIndexOf(".")+1,filename.length)).toLowerCase();
+        var supportType = new Array();
+        supportType[0] = 'doc';
+        supportType[1] = 'docx';
+        for (var i = 0;i <supportType.length;i++){
+          if(supportType[i] == fileType){
+            isSuppot = true;
+          }
+
+      }
+      if(isSuppot ==false){
+        toastr.error("请选择上传doc或docx格式的文件");
+        return false;
+      }
+      var date = new Date();
+      var dateNow = date.getFullYear()+"-"+date.getMonth()+"-"+date.getDate();
+      $.ajax({
+        url: [[${documentConfig.postDocumentUrl}]],
+        type: 'post',
+        dataType: "json",
+        data: formData,
+        processData: false,
+        contentType: false
+      })
+              .done(function(data) {
+                if (data.status == true) {
+                  toastr.success('文件上传成功');
+                  var newfile = "<div class='file-box'><div class='file' value ='" + data.jsonStr+"'><span class='corner'></span><div class='icon'> <i class='fa fa-file'></i> </div> <div class='file-name'>"+ filename +"<br/><small>添加时间："+dateNow+"</small></div></div></div>";
+                  $(".filecontainer").append(newfile);    
+                }else{
+                  toastr.error(data.errMsg.message);
+                }
+              })
+              .fail(function() {
+                toastr.error('文件上传失败,请检查网络情况');
+              })
+              .always(function() {
+                console.log("complete");
+              });
+    });
+  });
+
+</script>
+
+	<script th:inline="javascript">
+	
+    function paging(currentPage, totalPages, manageDocumentsUrl) {
+        if (totalPages > 0) {
+            var options = {
+                currentPage: currentPage,
+                totalPages: totalPages,
+                pageUrl: function(type, page, current) {
+                    return manageDocumentsUrl + page;
+                }
+            }
+            $('#documentPaging').bootstrapPaginator(options);
+        }
+    }
+    new paging([[${documentConfig.currentPage}]], [[${documentConfig.totalPages}]],[[${documentConfig.manageDocumentsUrl}]]);
+
+    </script>
+
+</body>
+</html>

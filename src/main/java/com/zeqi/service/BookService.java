@@ -13,7 +13,7 @@ public interface BookService {
 
     BasicJson deleteBookLoan(String[] bookLoanId);
 
-    BasicJson getBookLoanList(String[] pageInfo, boolean isSpecific, String stuId);
+    BasicJson getBookLoanList(String page, boolean isSpecific, String stuId);
 
     BasicJson addBook(HttpServletRequest request);
 
@@ -21,7 +21,7 @@ public interface BookService {
 
     BasicJson updateBook(int id, HttpServletRequest request);
 
-    BasicJson getBookList(String[] pageInfo);
+    BasicJson getBookList(String page);
 
     int getBookLoanNum(boolean isSpecific, String stuId);
 

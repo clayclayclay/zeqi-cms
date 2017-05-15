@@ -63,8 +63,7 @@ public class AlbumController {
     @RequestMapping(value = "/album/{page}", method= RequestMethod.GET)
     public BasicJson getAlbumList(@PathVariable String page) {
         BasicJson basicJson;
-        String[] pageInfo = page.split("&");
-        basicJson = albumService.getAlbumList(pageInfo);
+        basicJson = albumService.getAlbumList(page);
         return basicJson;
     }
 
@@ -115,8 +114,7 @@ public class AlbumController {
     @RequestMapping(value = "/album/{albumId}/photo/{page}", method= RequestMethod.GET)
     public BasicJson getAlbumPhoto(@PathVariable String albumId, @PathVariable String page) {
         BasicJson basicJson = new BasicJson(false);
-        String[] pageInfo = page.split("&");
-        basicJson = albumService.getPhotoList(albumId, pageInfo);
+        basicJson = albumService.getPhotoList(albumId, page);
         return basicJson;
     }
 

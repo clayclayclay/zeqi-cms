@@ -1,0 +1,96 @@
+user:
+  dataEnum:
+     grade:
+      - 2013级
+      - 2014级
+      - 2015级
+      - 2016级
+     major:
+      - 信息工程
+      - 软件技术
+      - 嵌入式系统
+      - 大型主机
+      - 网络安全
+      - 数字动漫
+     position:
+      - 技术部成员
+      - 内务部成员
+      - 对外宣传部成员
+      - 活动竞赛部成员
+      - 技术部部长
+      - 内务部部长
+      - 对外宣传部部长
+      - 活动竞赛部部长
+      - 工作室第一负责人
+      - 工作室第二负责人
+      - 老干部
+  apiConfig:
+    getUsersUrl:
+    getUserUrl:
+    updateUserUrl:
+  resourceConfig:
+    imgPath: /user/avatar/
+    imgUrl: /avatar/
+    backgroundImgPath: /user/background/
+    backgroundImgUrl: /background/
+      
+
+
+  
+staticResourcePath:
+  css: 
+  js:
+  img:
+          
+article:
+  paging:
+    perPageArticleNum: 5
+  apiConfig:
+    getArticlesUrl: /web/articles/
+    getArticleUrl: /web/article/
+    postArticleUrl: /web/article/
+    deleteArticleUrl: /web/article/
+    updateArticleUrl: /web/article/
+
+  
+document:
+  paging:
+    perPageArticleNum: 5
+  apiConfig:
+    getDocumentsUrl: /web/documents/
+    postDocumentUrl: /web/document/
+    deleteDocumentUrl:  /web/document/
+    manageDocumentsUrl: /web/documents/guy/
+  resourceConfig:
+    downloadDocumentPath: /document/
+    uploadDocumentPath: /data/document/
+ 
+album:
+  perPageAlbumNum: 5 
+  perPagePhotoNum: 5
+  getAlubmSUrl:
+  getAlbumUrl:
+  postAlbumUrl:
+  deleteAlbumUrl:
+  updateAlbumUrl:
+  
+book:
+  perBookNum: 5
+  getBooksUrl:
+  getBookUrl:
+  postBookUrl:
+  deleteBookUrl:
+  updateBookUrl:
+  
+funding:
+  perFundingNum: 5
+  getFundingsUrl:
+  getFundingUrl:
+  postFundingUrl:
+  deleteFundingUrL:
+  updateFundingUrl:
+  
+
+  
+       
+

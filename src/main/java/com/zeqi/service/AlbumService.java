@@ -15,13 +15,13 @@ public interface AlbumService {
 
     BasicJson deleteAlbum(String[] albumId);
 
-    BasicJson getAlbumList(String[] pageInfo);
+    BasicJson getAlbumList(String page);
 
     BasicJson addPhoto(MultipartHttpServletRequest request, String albumId);
 
     BasicJson deletePhoto(String[] photoId);
 
-    BasicJson getPhotoList(String albumId, String[] pageInfo);
+    BasicJson getPhotoList(String albumId, String page);
 
     int getAlbumNum();
 

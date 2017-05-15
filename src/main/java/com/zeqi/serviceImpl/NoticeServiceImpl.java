@@ -64,7 +64,7 @@ public class NoticeServiceImpl implements NoticeService {
     @Override
     public BasicJson deleteNotice(String[] noticesId) {
         BasicJson basicJson = new BasicJson(false);
-        if (basicDao.delete(noticesId, "Notice")) {
+        if (basicDao.delete(noticesId, Notice.class)) {
             basicJson.setStatus(true);
             basicJson.getErrMsg().setCode("200");
             basicJson.getErrMsg().setMessage("删除成功");
@@ -86,7 +86,7 @@ public class NoticeServiceImpl implements NoticeService {
     @Override
     public BasicJson updateNotice(int id, HttpServletRequest request) {
         BasicJson basicJson = new BasicJson(false);
-        Notice notice = (Notice) basicDao.get(new Notice(), id);
+        Notice notice = (Notice) basicDao.get(Notice.class, id);
         notice.setTitle(request.getParameter("title"));
         notice.setContent(request.getParameter("content"));
         if (basicDao.save(notice)) {
@@ -145,7 +145,7 @@ public class NoticeServiceImpl implements NoticeService {
     public BasicJson getNotice(int id) {
         BasicJson basicJson = new BasicJson(false);
         Notice notice;
-        notice = (Notice) basicDao.get(new Notice(), id);
+        notice = (Notice) basicDao.get(Notice.class, id);
         basicJson.setStatus(true);
         basicJson.getErrMsg().setCode("200");
         basicJson.getErrMsg().setMessage("获取成功");

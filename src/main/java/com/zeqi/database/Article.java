@@ -3,6 +3,8 @@ package com.zeqi.database;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+
 import java.sql.Timestamp;
 
 /**
@@ -13,13 +15,12 @@ import java.sql.Timestamp;
 public class Article {
 
     private int id;
-    private String dateGmt;
-    private String content;
-    private int commentCount;
     private String title;
-    private String stuId;
-    private String stuName;
-
+    private String content;
+    private int readCount;
+    private int commentCount;
+    private String createTime;
+    private StudentInfo studentInfo;
 
     @Id
     @Column(name = "id")
@@ -32,18 +33,31 @@ public class Article {
         this.id = id;
     }
 
+  
     @Basic
-    @Column(name = "date_gmt")
-    public String getDateGmt() {
-        return dateGmt;
-    }
+    @Column(name = "read_count")
+    public int getReadCount() {
+		return readCount;
+	}
 
-    public void setDateGmt(String dateGmt) {
-        this.dateGmt = dateGmt;
-    }
+	public void setReadCount(int readCount) {
+		this.readCount = readCount;
+	}
 
     @Basic
-    @Column(name = "content")
+    @Column(name = "create_time")
+    @NotNull
+	public String getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(String createTime) {
+		this.createTime = createTime;
+	}
+
+	
+	@Column(name = "content", columnDefinition="TEXT")
+	@NotNull
     public String getContent() {
         return content;
     }
@@ -64,6 +78,7 @@ public class Article {
 
     @Basic
     @Column(name = "title")
+    @NotNull
     public String getTitle() {
         return title;
     }
@@ -72,33 +87,14 @@ public class Article {
         this.title = title;
     }
 
-    @Basic
-    @Column(name = "stu_id")
-    public String getStuId() {
-        return stuId;
-    }
+    @ManyToOne(cascade=CascadeType.ALL)
+    @JoinColumn(name="stuId")
+    public StudentInfo getStudentInfo() {
+		return studentInfo;
+	}
 
-    public void setStuId(String stuId) {
-        this.stuId = stuId;
-    }
+	public void setStudentInfo(StudentInfo studentInfo) {
+		this.studentInfo = studentInfo;
+	}
 
-    @Basic
-    @Column(name = "stu_name")
-    public String getStuName() {
-        return stuName;
-    }
-
-    public void setStuName(String stuName) {
-        this.stuName = stuName;
-    }
-
-    @Override
-    public String toString() {
-        return super.toString();
-    }
-
-    @Override
-    public int hashCode() {
-        return super.hashCode();
-    }
 }

@@ -1,0 +1,3 @@
+markdown-editor-plugin: simplemde-markdown-editor
+https://github.com/NextStepWebs/simplemde-markdown-editor
+

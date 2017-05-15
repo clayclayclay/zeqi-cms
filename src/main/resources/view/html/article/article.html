@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title th:text="${article.title}"></title>
+<meta content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="renderer" content="webkit" />
+<meta name="keywords" content="择栖管理后台" />
+<meta name="description" content="择栖工作室nb" />
+<link rel="shortcut icon" href="/img/index/logo.jpg" />
+<link href="/css/basic/bootstrap.min.css" rel="stylesheet" />
+<link href="/css/basic/font-awesome.min.css" rel="stylesheet" />
+<link href="/css/basic/animate.css" rel="stylesheet" />
+<link href="/css/basic/style.css" rel="stylesheet" />
+</head>
+<body class="gray-bg">
+<div class="wrapper wrapper-content  animated fadeInRight article">
+  <div class="row">
+    <div class="col-lg-10 col-lg-offset-1">
+      <div class="ibox">
+        <div class="ibox-content">
+          <div class="text-center article-title">
+            <h1 th:text="${article.title}"></h1>
+          </div >
+            <span th:utext="${article.content}"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+	<!-- 全局js -->
+	<script src="/js/basic/jquery.min.js"></script>
+	<script src="/js/basic/bootstrap.min.js"></script>
+	<!-- 自定义js -->
+	<script src="/js/basic/content.js"></script>
+
+
+</body>
+</html>

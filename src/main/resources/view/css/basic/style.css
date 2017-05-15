@@ -393,7 +393,9 @@ body.mini-navbar .navbar-default .nav > li > .nav-second-level li a {
 
 .navbar-fixed-top,
 .navbar-static-top {
-    background: #f3f3f4;
+    /*background: #f3f3f4;*/
+    background: #2f4050;
+    
 }
 
 .fixed-nav #wrapper {
@@ -3395,7 +3397,7 @@ a:focus {
 }
 
 .border-bottom {
-    border-bottom: 1px solid #e7eaec !important;
+    border-bottom: 1px solid #2f4050 !important;
 }
 
 .font-bold {
@@ -3629,7 +3631,7 @@ body.body-small .footer.fixed {
 .content-tabs {
     position: relative;
     height: 42px;
-    background: #fafafa;
+    background: #2f4050;
     line-height: 40px;
 }
 
@@ -3646,16 +3648,16 @@ body.body-small .footer.fixed {
 
 .content-tabs .roll-left {
     left: 0;
-    border-right: solid 1px #eee;
+    border-right: solid 1px #2f4050;
 }
 
 .content-tabs .roll-right {
     right: 0;
-    border-left: solid 1px #eee;
+    border-left: solid 1px #2f4050;
 }
 
 .content-tabs button {
-    background: #fff;
+    background: #2f4050;
     border: 0;
     height: 40px;
     width: 40px;
@@ -3663,7 +3665,7 @@ body.body-small .footer.fixed {
 }
 
 .content-tabs button:hover {
-    background: #fafafa;
+    background: #2f4050;
 }
 
 nav.page-tabs {
@@ -3680,7 +3682,7 @@ nav.page-tabs .page-tabs-content {
 .page-tabs a {
     display: block;
     float: left;
-    border-right: solid 1px #eee;
+    border-right: solid 1px #2f4050;
     padding: 0 15px;
 }
 
@@ -3710,7 +3712,7 @@ nav.page-tabs .page-tabs-content {
 }
 
 .roll-right.J_tabExit {
-    background: #fff;
+    background: #2f4050;
     height: 40px;
     width: 60px;
     outline: none;
@@ -3721,7 +3723,7 @@ nav.page-tabs .page-tabs-content {
 }
 
 #content-main {
-    height: calc(100% - 140px);
+    height: calc(100% - 99px);
     overflow: hidden;
 }
 

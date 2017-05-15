@@ -1,6 +1,5 @@
 package com.zeqi.serviceImpl;
 
-import com.zeqi.constant.ConstantPath;
 import com.zeqi.dao.AuthDao;
 import com.zeqi.dao.BasicDao;
 import com.zeqi.dao.UserCenterDao;
@@ -8,9 +7,12 @@ import com.zeqi.database.Article;
 import com.zeqi.database.BookLoan;
 import com.zeqi.database.StudentAccount;
 import com.zeqi.database.StudentInfo;
-import com.zeqi.entity.ArticleListInfoEntity;
+import com.zeqi.dataconfig.ArticleConfig;
+import com.zeqi.dataconfig.ConstantPath;
+import com.zeqi.dataconfig.UserResourceConfig;
+import com.zeqi.dataenum.Position;
+import com.zeqi.dto.ArticleIndexDTO;
 import com.zeqi.json.BasicJson;
-import com.zeqi.positionEnum.Position;
 import com.zeqi.service.UserCenterService;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +41,10 @@ public class UserCenterServiceImpl implements UserCenterService {
     private BasicDao basicDao;
     @Autowired
     private UserCenterDao userCenterDao;
+    @Autowired
+    private UserResourceConfig userResourceConfig;
+    @Autowired
+    private ArticleConfig a;
 
     /**
      *用户登录验证
@@ -109,15 +115,11 @@ public class UserCenterServiceImpl implements UserCenterService {
      * @return
      */
     @Override
-    public BasicJson updatePassword(String json, HttpServletRequest request) {
+    public BasicJson updatePassword(Map<String, String> map, HttpServletRequest request) {
         BasicJson basicJson = new BasicJson(false);
-        String[] str = json.split("&");
-        String oldPassword = str[0].split("=")[1];
-        System.out.println("the input oldPassword is :" + oldPassword);
-        String newPassword = str[1].split("=")[1];
-        System.out.println("the input newPassword is :" + newPassword);
+        String oldPassword = map.get("oldPassword");
+        String newPassword = map.get("newPassword");
         StudentAccount studentAccount = (StudentAccount) request.getSession().getAttribute("student_account");
-        System.out.println("origin password is :" + studentAccount.getPassword());
         if (studentAccount.getPassword().equals(oldPassword)) {
             studentAccount.setPassword(newPassword);
             boolean isUpdate = basicDao.save(studentAccount);
@@ -163,28 +165,29 @@ public class UserCenterServiceImpl implements UserCenterService {
         return basicJson;
     }
 
-    /**
-     * 获取我所写的文章列表
-     * @param request
-     * @return
-     */
+//    /**
+//     * 获取我所写的文章列表
+//     * @param request
+//     * @return
+//     */
     @Override
-    public List<ArticleListInfoEntity> getArticleList(HttpServletRequest request) {
-        String stuId = ((StudentInfo) request.getSession().getAttribute("student_info")).getStuId();
-        List<Article> articleList = (List<Article>) basicDao.getAllByForeignKey("Article", "stuId", stuId);
-        ArticleListInfoEntity articleListInfoEntity;
-        StudentInfo studentInfo;
-        List<ArticleListInfoEntity> articleListInfoEntityList = new ArrayList<ArticleListInfoEntity>();
-        for (int i = 0; i < articleList.size(); i++) {
-            articleListInfoEntity = new ArticleListInfoEntity();
-            studentInfo = (StudentInfo) basicDao.get(new StudentInfo(), articleList.get(i).getId());
-            articleListInfoEntity.setTitle(articleList.get(i).getTitle());
-            articleListInfoEntity.setAuthor(studentInfo.getName());
-            articleListInfoEntity.setArticleId(articleList.get(i).getId());
-            articleListInfoEntity.setWriteTime(articleList.get(i).getDateGmt());
-            articleListInfoEntityList.add(articleListInfoEntity);
-        }
-        return articleListInfoEntityList;
+    public List<Article> getArticleList(HttpServletRequest request) {
+//        String stuId = ((StudentInfo) request.getSession().getAttribute("student_info")).getStuId();
+//        List<Article> articleList = (List<Article>) basicDao.getAllByForeignKey("Article", "stuId", stuId);
+//        Article articleListInfoEntity;
+//        StudentInfo studentInfo;
+//        List<Article> articleListInfoEntityList = new ArrayList<Article>();
+//        for (int i = 0; i < articleList.size(); i++) {
+//            articleListInfoEntity = new Article();
+//            studentInfo = (StudentInfo) basicDao.get(new StudentInfo(), articleList.get(i).getId());
+//            articleListInfoEntity.setTitle(articleList.get(i).getTitle());
+//            articleListInfoEntity.setAuthor(studentInfo.getName());
+//            articleListInfoEntity.setArticleId(articleList.get(i).getId());
+//            articleListInfoEntity.setWriteTime(articleList.get(i).getDateGmt());
+//            articleListInfoEntityList.add(articleListInfoEntity);
+//        }
+//        return articleListInfoEntityList;
+    	return null;
     }
 
 
@@ -195,9 +198,6 @@ public class UserCenterServiceImpl implements UserCenterService {
      */
     @Override
     public BasicJson uploadHeadPic(MultipartHttpServletRequest multiRequest){
-
-        System.out.println("进入到service.uploadHeadPic方法");
-
         BasicJson basicJson = new BasicJson(false);
         Map<String,MultipartFile> fileMap = multiRequest.getFileMap();
 
@@ -209,7 +209,7 @@ public class UserCenterServiceImpl implements UserCenterService {
         }
 
         //确定文件上传路径
-        String headPicPath = ConstantPath.HEAD_PIC_PHYSICAL_PATH;
+//        String headPicPath = ConstantPath.HEAD_PIC_PHYSICAL_PATH;
 
         StudentInfo StudentInfo = (StudentInfo)multiRequest.getSession().getAttribute("student_info");
 
@@ -223,11 +223,10 @@ public class UserCenterServiceImpl implements UserCenterService {
             MultipartFile file = fileMap.get(key);
             String fileName = file.getOriginalFilename();
             try {
-                FileUtils.copyInputStreamToFile(file.getInputStream(), new File(headPicPath, fileName));
-                String picUrl = ConstantPath.HEAD_PIC_URL + fileName;
+            	String uploadPath = this.getClass().getClassLoader().getResource(userResourceConfig.getResourceConfig().get("imgPath")).getFile();
+                FileUtils.copyInputStreamToFile(file.getInputStream(), new File(uploadPath, fileName));
+                String picUrl = userResourceConfig.getResourceConfig().get("imgUrl") + fileName;
                 StudentInfo.setHeadPic(picUrl);
-                System.out.println(picUrl);
-//                StudentInfo.setStuId(String.valueOf(stuId));
                 basicDao.save(StudentInfo);
                 multiRequest.getSession().setAttribute("head_pic", picUrl);
                 basicJson.setStatus(true);
@@ -263,7 +262,7 @@ public class UserCenterServiceImpl implements UserCenterService {
         }
 
         //确定文件上传路径
-        String headPicPath = ConstantPath.BACKGROUND_PIC_PHYSICAL_PATH;
+    	String uploadPath = this.getClass().getClassLoader().getResource(userResourceConfig.getResourceConfig().get("backgroundImgPath")).getFile();
 
         StudentInfo StudentInfo = (StudentInfo)multiRequest.getSession().getAttribute("student_info");
 
@@ -275,8 +274,8 @@ public class UserCenterServiceImpl implements UserCenterService {
             MultipartFile file = fileMap.get(key);
             String fileName = file.getOriginalFilename();
             try {
-                FileUtils.copyInputStreamToFile(file.getInputStream(), new File(headPicPath, fileName));
-                String backgroundPicUrl = ConstantPath.BACKGROUND_PIC_URL + fileName;
+                FileUtils.copyInputStreamToFile(file.getInputStream(), new File(uploadPath, fileName));
+                String backgroundPicUrl = userResourceConfig.getResourceConfig().get("backgroundImgUrl") + fileName;
                 StudentInfo.setBackgroundPic(backgroundPicUrl);
                 System.out.println(backgroundPicUrl);
                 basicDao.save(StudentInfo);
@@ -284,7 +283,6 @@ public class UserCenterServiceImpl implements UserCenterService {
                 basicJson.getErrMsg().setCode("200");
                 basicJson.getErrMsg().setMessage("上传个性背景图片成功");
                 basicJson.setJsonStr(backgroundPicUrl);
-
             } catch (IOException e) {
                 basicJson.setStatus(false);
                 basicJson.getErrMsg().setCode("01006");
@@ -342,8 +340,8 @@ public class UserCenterServiceImpl implements UserCenterService {
 
     @Override
     public Enum getPosition(String userId) {
-        StudentInfo StudentInfo = new StudentInfo();
-        StudentInfo = (StudentInfo) basicDao.get(StudentInfo,userId);
+        StudentInfo studentInfo;
+        studentInfo = (StudentInfo) basicDao.get(StudentInfo.class, userId);
         return null;
     }
 

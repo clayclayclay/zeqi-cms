@@ -1,6 +1,7 @@
 package com.zeqi.database;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 /**
  * Created by Max on 2016/10/11.
@@ -29,6 +30,7 @@ public class Notice {
 
     @Basic
     @Column(name = "content")
+    @NotNull
     public String getContent() {
         return content;
     }
@@ -39,6 +41,7 @@ public class Notice {
 
     @Basic
     @Column(name = "publish_date")
+    @NotNull
     public String getPublishDate() {
         return publishDate;
     }
@@ -49,6 +52,7 @@ public class Notice {
 
     @Basic
     @Column(name = "title")
+    @NotNull
     public String getTitle() {
         return title;
     }
@@ -59,6 +63,7 @@ public class Notice {
 
     @Basic
     @Column(name = "type")
+    @NotNull
     public int getType() {
         return type;
     }

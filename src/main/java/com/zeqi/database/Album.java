@@ -1,8 +1,10 @@
 package com.zeqi.database;
 
-import javax.persistence.*;
-import java.sql.Timestamp;
 import java.util.Set;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+
 
 
 /**
@@ -14,7 +16,8 @@ public class Album {
     private int id;
     private String name;
     private String description;
-    private String albumTime;
+    private String createTime;
+    private Set<AlbumPicture> albumPictureSet;
 
     @Id
     @Column(name = "id")
@@ -29,6 +32,7 @@ public class Album {
 
     @Basic
     @Column(name = "name")
+    @NotNull
     public String getName() {
         return name;
     }
@@ -48,37 +52,25 @@ public class Album {
     }
 
     @Basic
-    @Column(name = "album_time")
-    public String getAlbumTime() {
-        return albumTime;
-    }
+    @Column(name = "create_time")
+    @NotNull
+    public String getCreateTime() {
+		return createTime;
+	}
 
-    public void setAlbumTime(String albumTime) {
-        this.albumTime = albumTime;
-    }
+	public void setCreateTime(String createTime) {
+		this.createTime = createTime;
+	}
 
+	@OneToMany
+	@JoinColumn(name = "album_id")
+	public Set<AlbumPicture> getAlbumPictureSet() {
+		return albumPictureSet;
+	}
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Album album = (Album) o;
-
-        if (id != album.id) return false;
-        if (albumTime != null ? !albumTime.equals(album.albumTime) : album.albumTime != null) return false;
-        if (description != null ? !description.equals(album.description) : album.description != null) return false;
-        if (name != null ? !name.equals(album.name) : album.name != null) return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = id;
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        result = 31 * result + (description != null ? description.hashCode() : 0);
-        result = 31 * result + (albumTime != null ? albumTime.hashCode() : 0);
-        return result;
-    }
+	public void setAlbumPictureSet(Set<AlbumPicture> albumPictureSet) {
+		this.albumPictureSet = albumPictureSet;
+	}
+	
+	
 }

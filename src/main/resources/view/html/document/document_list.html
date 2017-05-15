@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>文档中心</title>
+<meta content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="renderer" content="webkit" />
+<meta name="keywords" content="择栖管理后台" />
+<meta name="description" content="择栖工作室nb" />
+<link rel="shortcut icon" href="/img/index/logo.jpg" />
+<link
+	href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css"
+	rel="stylesheet">
+<link href="/css/basic/bootstrap.min.css" rel="stylesheet" />
+<link href="/css/basic/font-awesome.min.css" rel="stylesheet" />
+<link href="/css/basic/animate.css" rel="stylesheet" />
+<link href="/css/basic/style.css" rel="stylesheet" />
+
+</head>
+
+
+
+
+<body class="gray-bg">
+
+	<div class="wrapper wrapper-content animated fadeInUp">
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="ibox">
+					<div class="ibox-title">
+						<h5>所有文档</h5>
+					</div>
+					<div class="ibox-content">
+						<div class="project-list">
+							<table class="table table-hover">
+								<tbody th:each="document : ${documentList}">
+									<tr>
+										<td class="project-title"><span
+											th:text="${document.documentName}"></span> <br /> <small><span
+												th:text="${document.uploadTime}"></span>-<span
+												th:text=${document.stuName}></span></small></td>
+										<!--  
+										<td class="project-completion">> <<small>下载人数： 48</small>
+											<
+											<div class="progress progress-mini">
+												> <
+												<div style="width: 48%;" class="progress-bar"></div>
+												> <
+											</div>> <
+										</td>
+										-->
+										<td class="project-people"></td>
+										<td class="project-actions"><a
+											th:href="${documentConfig.downloadDocumentPath} + ${documentConfig.id}"
+											class="btn btn-white btn-sm"><i class="fa fa-download"></i>
+												下载 </a></td>
+									</tr>
+								</tbody>
+							</table>
+							<div class="col-sm-offset-4">
+								<div id="documentPaging"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<!-- 全局js -->
+	<script src="/js/basic/jquery.min.js"></script>
+	<script src="/js/basic/bootstrap.min.js"></script>
+	<!-- 自定义js -->
+	<script src="/js/basic/content.js"></script>
+
+	<script
+		src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+	<script
+		src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
+	<script
+		src="/plugin/bootstrap-pagination-plugin/build/bootstrap-paginator.min.js"></script>
+
+	<script>
+		$(document).ready(function() {
+
+			$('#loading-example-btn').click(function() {
+				btn = $(this);
+				simpleLoad(btn, true)
+
+				// Ajax example
+				//                $.ajax().always(function () {
+				//                    simpleLoad($(this), false)
+				//                });
+
+				simpleLoad(btn, false)
+			});
+		});
+
+		function simpleLoad(btn, state) {
+			if (state) {
+				btn.children().addClass('fa-spin');
+				btn.contents().last().replaceWith(" Loading");
+			} else {
+				setTimeout(function() {
+					btn.children().removeClass('fa-spin');
+					btn.contents().last().replaceWith(" Refresh");
+				}, 2000);
+			}
+		}
+	</script>
+
+	<script th:inline="javascript">
+	
+	function paging(currentPage, totalPages, getDocumentsUrl) {
+	    if (totalPages > 0) {
+	        var options = {
+	            currentPage: currentPage,
+	            totalPages: totalPages,
+	            pageUrl: function(type, page, current) {
+	                return getDocumentsUrl + page;
+	            }
+	        }
+	        $('#documentPaging').bootstrapPaginator(options);
+	    }
+	}
+    new paging([[${documentConfig.currentPage}]], [[${documentConfig.totalPages}]],[[${documentConfig.getDocumentsUrl}]]);
+
+    </script>
+</body>
+</html>

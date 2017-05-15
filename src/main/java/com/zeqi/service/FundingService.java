@@ -17,7 +17,7 @@ public interface FundingService {
 
     BasicJson updateFunding(int id, HttpServletRequest request);
 
-    BasicJson getFundingList(String[] pageInfo);
+    BasicJson getFundingList(String page);
 
     int getFundingNum();
 

@@ -2,6 +2,7 @@ package com.zeqi.serviceImpl;
 
 import com.zeqi.dao.BasicDao;
 import com.zeqi.database.*;
+import com.zeqi.dataconfig.BookConfig;
 import com.zeqi.json.BasicJson;
 import com.zeqi.json.EntityJson;
 import com.zeqi.service.BookService;
@@ -23,7 +24,8 @@ public class BookServiceImpl implements BookService {
 
     @Autowired
     private BasicDao basicDao;
-
+    @Autowired
+    private BookConfig bookConfig;
 
     /**
      * 借阅书籍
@@ -35,14 +37,13 @@ public class BookServiceImpl implements BookService {
         BasicJson basicJson = new BasicJson(false);
         BookLoan bookloan = new BookLoan();
         bookloan.setNote(request.getParameter("note"));
-        bookloan.setStuId(((StudentInfo) request.getSession().getAttribute("student_info")).getStuId());
-        bookloan.setStuName(((StudentInfo) request.getSession().getAttribute("student_info")).getName());
+        bookloan.setStudentInfo(((StudentInfo) request.getSession().getAttribute("student_info")));
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         bookloan.setBorrowTime(sdf.format(new Date()));
-        BookInfo bookInfo = (BookInfo) basicDao.get(new BookInfo(), request.getParameter("id"));
+        BookInfo bookInfo = (BookInfo) basicDao.get(BookInfo.class, request.getParameter("id"));
         if (bookInfo != null) {
-            bookloan.setBookId(bookInfo.getId());
-            bookloan.setBookName(bookInfo.getName());
+//            bookloan.setBook(bookInfo.getId());
+//            bookloan.setBookName(bookInfo.getName());
         } else {
             basicJson.setStatus(false);
             basicJson.getErrMsg().setCode("02001");
@@ -71,7 +72,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public BasicJson deleteBookLoan(String[] bookLoanId) {
         BasicJson basicJson = new BasicJson(false);
-        if (basicDao.delete(bookLoanId, "BookLoan")) {
+        if (basicDao.delete(bookLoanId, BookLoan.class)) {
             basicJson.setStatus(true);
             basicJson.getErrMsg().setCode("200");
             basicJson.getErrMsg().setMessage("归还成功");
@@ -92,15 +93,15 @@ public class BookServiceImpl implements BookService {
      */
     @Override
     @SuppressWarnings("unchecked")
-    public BasicJson getBookLoanList(String[] pageInfo, boolean isSpecific, String stuId) {
+    public BasicJson getBookLoanList(String page, boolean isSpecific, String stuId) {
         BasicJson basicJson = new BasicJson(false);
         EntityJson<BookLoan> bookLoanEntityJson = new EntityJson<BookLoan>();
-        List<BookLoan> bookLoanList = (List<BookLoan>) basicDao.getAllByPage("BookLoan", pageInfo, true, "borrowTime");
+        List<BookLoan> bookLoanList = (List<BookLoan>) basicDao.getAllByPage("BookLoan", page, bookConfig.getPerBookNum(), true, "borrowTime");
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         if (isSpecific) {
             List<BookLoan> bookLoanListByGuy = new ArrayList<BookLoan>();
             for (BookLoan bookLoan : bookLoanList) {
-                if (bookLoan.getStuId().equals(stuId)) {
+                if (bookLoan.getStudentInfo().getStuId().equals(stuId)) {
                     try {
                         bookLoan.setBorrowTime(sdf.format(sdf.parse(bookLoan.getBorrowTime())));
                         bookLoanListByGuy.add(bookLoan);
@@ -113,7 +114,7 @@ public class BookServiceImpl implements BookService {
                 }
             }
             Double totalPageDouble = Double.valueOf(String.valueOf(getBookLoanNum(true, stuId)));
-            Double requestPageNumDouble = Double.valueOf(pageInfo[1]);
+            Double requestPageNumDouble = Double.valueOf(page);
             int pageNum = ((Double) Math.ceil(totalPageDouble / requestPageNumDouble)).intValue();
             bookLoanEntityJson.setEntityList(bookLoanListByGuy);
             bookLoanEntityJson.setPage(pageNum);
@@ -131,7 +132,7 @@ public class BookServiceImpl implements BookService {
             }
         }
         Double totalPageDouble = Double.valueOf(String.valueOf(getBookLoanNum(false, null)));
-        Double requestPageNumDouble = Double.valueOf(pageInfo[1]);
+        Double requestPageNumDouble = Double.valueOf(page);
         int pageNum = ((Double) Math.ceil(totalPageDouble / requestPageNumDouble)).intValue();
         bookLoanEntityJson.setEntityList(bookLoanList);
         bookLoanEntityJson.setPage(pageNum);
@@ -179,7 +180,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public BasicJson deleteBook(String[] bookId) {
         BasicJson basicJson = new BasicJson(false);
-        if (basicDao.delete(bookId, "BookLoan")) {
+        if (basicDao.delete(bookId, BookLoan.class)) {
             basicJson.setStatus(true);
             basicJson.getErrMsg().setCode("200");
             basicJson.getErrMsg().setMessage("删除成功");
@@ -201,7 +202,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public BasicJson updateBook(int id, HttpServletRequest request) {
         BasicJson basicJson = new BasicJson(false);
-        BookInfo bookInfo = (BookInfo) basicDao.get(new BookInfo(), id);
+        BookInfo bookInfo = (BookInfo) basicDao.get(BookInfo.class, id);
         bookInfo.setName(request.getParameter("name"));
         bookInfo.setPublisher(request.getParameter("publisher"));
         bookInfo.setAuthor(request.getParameter("author"));
@@ -224,12 +225,12 @@ public class BookServiceImpl implements BookService {
      */
     @Override
     @SuppressWarnings("unchecked")
-    public BasicJson getBookList(String[] pageInfo) {
+    public BasicJson getBookList(String page) {
         BasicJson basicJson = new BasicJson(false);
         EntityJson<BookInfo> bookLoanEntityJson = new EntityJson<BookInfo>();
-        List<BookInfo> bookInfoList = (List<BookInfo>) basicDao.getAllByPage("BookInfo", pageInfo, false, null);
+        List<BookInfo> bookInfoList = (List<BookInfo>) basicDao.getAllByPage("BookInfo", page, bookConfig.getPerBookNum(), false, null);
         Double totalPageDouble = Double.valueOf(String.valueOf(getBookNum()));
-        Double requestPageNumDouble = Double.valueOf(pageInfo[1]);
+        Double requestPageNumDouble = Double.valueOf(page);
         int pageNum = ((Double) Math.ceil(totalPageDouble / requestPageNumDouble)).intValue();
         bookLoanEntityJson.setEntityList(bookInfoList);
         bookLoanEntityJson.setPage(pageNum);

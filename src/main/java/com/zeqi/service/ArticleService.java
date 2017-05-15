@@ -1,15 +1,10 @@
 package com.zeqi.service;
 
-import com.zeqi.database.Article;
-import com.zeqi.database.DocumentInfo;
-import com.zeqi.entity.ArticleListInfoEntity;
+import com.zeqi.dto.ArticleEntityDTO;
 import com.zeqi.json.BasicJson;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Max on 2016/10/14.
@@ -22,10 +17,10 @@ public interface ArticleService {
 
     BasicJson updateArticle(int id, HttpServletRequest request);
 
-    BasicJson getArticle(int articleId);
+    ArticleEntityDTO getArticle(int articleId);
 
-    BasicJson getArticleList(String[] pageInfo, boolean isSpecific, String stuId);
-
-    int getArticleNum(boolean isSpecific, String stuId);
-
+    Map<String, Object> getArticleList(String page);
+    
+    Map<String, Object> getArticleList(String page, String stuId);
+    
 }
