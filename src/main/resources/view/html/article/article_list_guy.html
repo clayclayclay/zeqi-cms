@@ -11,8 +11,10 @@
 <link
 	href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css"
 	rel="stylesheet">
-<link href="/css/basic/bootstrap.min.css" rel="stylesheet" />
-<link href="/css/basic/font-awesome.min.css" rel="stylesheet" />
+<link href="/plugin/bootstrap-3.3.7-dist/css/bootstrap.min.css"
+    rel="stylesheet">
+<link href="/plugin/font-awesome-4.7.0/css/font-awesome.min.css"
+    rel="stylesheet">
 <link href="/css/basic/animate.css" rel="stylesheet" />
 <link href="/css/basic/style.css" rel="stylesheet" />
 
@@ -32,7 +34,7 @@
 					<div class="ibox-title">
 						<h5>择栖技术文章</h5>
 						<div class="ibox-tools">
-							<a href="/html/article/article_write2.html"
+							<a href="/html/article/article_write.html"
 								class="btn btn-primary btn-xs">编写文章</a>
 						</div>
 					</div>
@@ -44,7 +46,7 @@
 										th:each="article : ${articleList}">
 										<div class="ibox ibox-file">
 											<div class="ibox-content">
-												<a th:href="${articleConfig.getArticleUrl} + ${article.articleId}" class="btn-link">
+												<a th:href="${articleConfig.getArticleGuyUrl} + ${article.articleId}" class="btn-link">
 													<h2>
 														<span th:text="${article.title}"></span>
 													</h2>
@@ -61,7 +63,9 @@
 														<h5>标签：</h5>
 														<button class="btn btn-primary btn-xs" type="button">技术文章
 														</button>
-														<button class="btn btn-white btn-xs" type="button">技术文章</button>
+														<!--  
+                                                        <button class="btn btn-white btn-xs" type="button">技术文章</button>
+                                                        -->
 													</div>
 													<div class="col-md-6">
 														<div class="small text-right">
@@ -92,7 +96,7 @@
 
 	<!-- 全局js -->
 	<script src="/js/basic/jquery.min.js"></script>
-	<script src="/js/basic/bootstrap.min.js"></script>
+	<script src="/plugin/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
 	<!-- 自定义js -->
 	<script src="/js/basic/content.js"></script>
 
@@ -145,7 +149,7 @@
              $('#articlePaging').bootstrapPaginator(options);
         }
     }
-    new paging([[${articleConfig.currentPage}]], [[${articleConfig.totalPages}]],[[${articleConfig.getArticlesUrl}]]);
+    new paging([[${articleConfig.currentPage}]], [[${articleConfig.totalPages}]],[[${articleConfig.getArticlesGuyUrl}]]);
 
     </script>
 </body>

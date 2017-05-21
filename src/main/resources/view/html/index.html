@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
 <title>择栖交流平台</title>
 
@@ -12,19 +12,13 @@
 <link rel="shortcut icon" href="/img/index/logo.jpg">
 <link rel="stylesheet" type="text/css" href="/css/demo.css" />
 <link rel="stylesheet" type="text/css" href="/css/index.css">
-<link rel="stylesheet" type="text/css"
-	href="/css/basic/font-awesomes.min.css">
-<link rel="stylesheet" type="text/css"
-	href="/css/basic/bootstrap.min.css" />
+<link href="/plugin/bootstrap-3.3.7-dist/css/bootstrap.min.css"
+	rel="stylesheet">
+<link href="/plugin/font-awesome-4.7.0/css/font-awesome.min.css"
+	rel="stylesheet">
 <link rel="stylesheet" type="text/css" href="/css/basic/cssreset.css">
-
-<script type="text/javascript" src="/js/basic/jquery.js"></script>
-<script type="text/javascript" src="/js/basic/jquery.cookie.js"></script>
-<script type="text/javascript" src="/js/basic/index.js"></script>
-
 <link rel="stylesheet" type="text/css" href="/css/basic/noJS.css" />
-
-
+<link href="/css/basic/style.css" rel="stylesheet" />
 </head>
 <body>
 	<div class="nav" id="nav">
@@ -36,7 +30,7 @@
 		<span class="par" id="par">
 			<div id="login_out">
 				<i class="icon-user"></i><span>登录</span>
-			</div> <!-- <img class="user" src="./img/head.jpg" id="user"> -->
+			</div>
 		</span>
 	</div>
 	<section class="article" id="section1">
@@ -111,8 +105,21 @@
 	<section class="article" id="section6">
 		<span>designed by ZeQi team</span>
 	</section>
-	<script type="text/javascript">
-		
-	</script>
+	
+	<input type="hidden" id="user_avatar" th:value="${user_avatar}">
 </body>
+<script type="text/javascript" src="/js/basic/jquery.windy.js"></script>
+<script type="text/javascript" src="/js/basic/jquery.min.js"></script>
+<script type="text/javascript" src="/js/basic/jquery.cookie.js"></script>
+<script type="text/javascript" src="/js/index/index.js"></script>
+<script>
+//判断是否已经登陆
+var is_login = [[${isLogin}]];
+var user_avatar = document.getElementById("user_avatar").value;
+if (is_login) {
+    $('#par').empty();
+    $('#par').html("<a><img class='user' src=" + user_avatar + " id='user'></a>");
+    $('#par a').attr('href',"/web/guy");
+}
+</script>
 </html>

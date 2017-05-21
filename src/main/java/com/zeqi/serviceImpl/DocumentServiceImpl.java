@@ -11,6 +11,9 @@ import com.zeqi.dto.DocumentEntityDTO;
 import com.zeqi.json.BasicJson;
 import com.zeqi.json.EntityJson;
 import com.zeqi.service.DocumentService;
+import com.zeqi.util.CommonUtil;
+import com.zeqi.util.DateConvertUtil;
+
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -74,8 +77,7 @@ public class DocumentServiceImpl implements DocumentService {
                 documentInfo = new DocumentInfo();
                 documentInfo.setDocumentName(fileName);
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                String strDate = sdf.format(new Date());
-                documentInfo.setCreateTime(strDate);
+                documentInfo.setCreateTime(DateConvertUtil.getNowLongTime());
                 documentInfo.setStudentInfo((StudentInfo) multipartHttpServletRequest.getSession().getAttribute("student_info"));
                 basicDao.save(documentInfo);
                 basicJson.setStatus(true);
@@ -136,14 +138,10 @@ public class DocumentServiceImpl implements DocumentService {
 		for (DocumentInfo documentInfo : documentInfoList) {
 			DocumentEntityDTO documentEntityDTO = new DocumentEntityDTO();
 			documentEntityDTO.setId(documentInfo.getId());
-			documentEntityDTO.setDownloadUrl(documentConfig.getApiConfig().get("") + documentInfo.getDocumentName());
-			String prefix = documentInfo.getDocumentName().split("-")[0];
-			String suffix = documentInfo.getDocumentName().split("-")[1];
-			String type = suffix.split("\\.")[1];
-			String documentName = prefix + type;
-			documentEntityDTO.setDocumentName(documentName);
+			documentEntityDTO.setDownloadUrl(documentConfig.getResourceConfig().get("downloadDocumentPath") + documentInfo.getDocumentName());
+			documentEntityDTO.setDocumentName(CommonUtil.convertDocumentName(documentInfo.getDocumentName()));
 			documentEntityDTO.setStuName(documentInfo.getStudentInfo().getName());
-			documentEntityDTO.setUploadTime(documentInfo.getCreateTime());
+			documentEntityDTO.setUploadTime(DateConvertUtil.longToString(documentInfo.getCreateTime()));
 			documentEntityDTOList.add(documentEntityDTO);
 		}
 		Double documentNum = Double.valueOf(basicDao.getTotalCount(DocumentInfo.class));
@@ -153,10 +151,10 @@ public class DocumentServiceImpl implements DocumentService {
 		documentConfig.put("currentPage", page);
 		documentConfig.put("totalPages", String.valueOf(totalPages));
 		documentConfig.put("downloadDocumentPath", this.documentConfig.getResourceConfig().get("downloadDocumentPath"));
-		documentConfig.put("getDocumentsUrl", this.documentConfig.getResourceConfig().get("getDocumentsUrl"));
-		documentConfig.put("postDocumentUrl", this.documentConfig.getResourceConfig().get("postDocumentUrl"));
-		documentConfig.put("manageDocumentsUrl", this.documentConfig.getResourceConfig().get("manageDocumentsUrl"));
-		documentConfig.put("deleteDocumentUrl", this.documentConfig.getResourceConfig().get("deleteDocumentUrl"));
+		documentConfig.put("getDocumentsUrl", this.documentConfig.getApiConfig().get("getDocumentsUrl"));
+		documentConfig.put("postDocumentUrl", this.documentConfig.getApiConfig().get("postDocumentUrl"));
+		documentConfig.put("manageDocumentsUrl", this.documentConfig.getApiConfig().get("manageDocumentsUrl"));
+		documentConfig.put("deleteDocumentUrl", this.documentConfig.getApiConfig().get("deleteDocumentUrl"));
 		map.put("documentDTOList", documentEntityDTOList);
 		map.put("documentConfig", documentConfig);
 		return map;

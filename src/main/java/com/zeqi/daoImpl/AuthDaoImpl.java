@@ -58,7 +58,7 @@ public class AuthDaoImpl implements AuthDao {
                 	}
                     request.getSession().setAttribute("student_info", list.get(0).getStudentInfo());
                     request.getSession().setAttribute("is_login",true);
-                    request.getSession().setMaxInactiveInterval(1200);
+                    request.getSession().setMaxInactiveInterval(60);
                     code = "200";
                 }
                 else {

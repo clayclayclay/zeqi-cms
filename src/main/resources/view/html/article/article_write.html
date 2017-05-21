@@ -1,21 +1,19 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html>
 <head>
-<title>写文章</title>
-<meta content="text/html; charset=utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<meta name="renderer" content="webkit" />
-<meta name="keywords" content="择栖管理后台" />
-<meta name="description" content="择栖工作室nb" />
-<link rel="shortcut icon" href="/img/index/logo.jpg" />
-<link href="/css/basic/bootstrap.min.css" rel="stylesheet" />
-<link href="/css/basic/font-awesome.min.css" rel="stylesheet" />
+<meta charset="UTF-8">
+<title>markdown-editor test02</title>
+<link rel="stylesheet"
+	href="/plugin/NextStepWebs-simplemde-markdown-editor/dist/simplemde.min.css" />
+<link rel="stylesheet"
+	href="https://cdn.jsdelivr.net/highlight.js/latest/styles/github.min.css">
+<link href="/plugin/bootstrap-3.3.7-dist/css/bootstrap.min.css"
+	rel="stylesheet">
+<link href="/plugin/font-awesome-4.7.0/css/font-awesome.min.css"
+	rel="stylesheet">
+<link href="/plugin/sweetalert/css/sweetalert.css" rel="stylesheet">
 <link href="/css/basic/animate.css" rel="stylesheet" />
 <link href="/css/basic/style.css" rel="stylesheet" />
-<link rel="stylesheet"
-	href="/plugin/css/markdown/bootstrap-markdown.min.css" />
-<link rel="stylesheet" href="/css/markdown/markdownstyle.css">
-<link href="/plugin/css/sweetalert/sweetalert.css" rel="stylesheet">
 <style type="text/css">
 .title-input-div {
 	font: inherit;
@@ -37,310 +35,169 @@
 	border: none;
 	background: #fff none repeat scroll 0 0;
 }
+
+.submit {
+	float: right;
+	margin: 20px 80px 0 0;
+}
 </style>
 </head>
 <body>
-	<div class="title-input-div">
-		<input type="text" name="title" id="title-input"
-			class="title-input-input" placeholder="表演的标题">
+	<div style="margin: 10px 10px 0 10px;">
+		<div class="title-input-div">
+			<input type="text" name="title" id="zeqi-markdown-title"
+				class="title-input-input" placeholder="别那么懒，起个名字吧...">
+		</div>
+		<textarea name="article" id="zeqi-markdown-content"></textarea>
+		<button class="btn btn-primary submit" id="upMarkDown" type="submit"
+			style="">提交</button>
 	</div>
-	<textarea style="height: 400px" id="text" name="text"
-		class="markdown-textarea"></textarea>
-
-
-	<!-- 全局js -->
-	<script src="/js/basic/jquery.min.js"></script>
-	<script src="/js/basic/bootstrap.min.js"></script>
-	<!-- 自定义js -->
-	<script src="/js/basic/content.js"></script>
-
-	<!-- simditor -->
-	<script type="text/javascript" src="/js/markdown/jquery.scrollto.js"></script>
-	<script type="text/javascript" src="/js/markdown/pagedown.js"></script>
-	<script type="text/javascript" src="/js/markdown/pagedown-extra.js"></script>
-	<script type="text/javascript" src="/js/markdown/diff.js"></script>
-	<script type="text/javascript" src="/plugin/js/markdown/markdown.js"></script>
-	<script type="text/javascript" src="/plugin/js/markdown/to-markdown.js"></script>
-	<script type="text/javascript"
-		src="/plugin/js/markdown/bootstrap-markdown.js"></script>
-	<script type="text/javascript"
-		src="/plugin/js/markdown/bootstrap-markdown.zh.js"></script>
-	<script src="/plugin/js/sweetalert/sweetalert.min.js"></script>
-	<script type="text/javascript">
-jQuery(document).ready(function($) {
-    var isOk = false;
-    $("#fileTitle").blur(function(){
-      var titleLength = $("#fileTitle").val().length;
-      if(titleLength > 50){
-        $(this).nextAll(".checkSpan").css("display","block");
-        isOk = false;
-      }else {
-        $(this).nextAll(".checkSpan").css("display", "none");
-        isOk = true;
-      }
-    });
-
-    $("#upMarkDown").click(function(event) {
-      var title = $("#fileTitle").val();
-      var textView = $("#md-preview").html();
-      if(title == "" || textView == ""){
-        swal("小仔>_<","东西都没写完就想交？","error");
-        return false;
-      }
-      if(isOk == false){
-        swal("小仔>_<","你看看你标题合格吗？","error");
-        return false;
-      }
-
-      $.ajax({
-        url: '/web/article',
-        type: 'post',
-        dataType: 'json',
-        data: {
-          "title": title,
-          "content":textView
-        }
-      })
-              .done(function(data) {
-                if (data.status == true) {
-                  swal({
-                    title: "创建成功>_< ",
-                    text: "你已成功创建！",
-                    type: "success",
-                    confirmButtonColor: "#DD6B55",
-                    confirmButtonText: "OK",
-                    closeOnConfirm: true
-                  }, function (){
-                    location.href = '/web/article/' + data.jsonStr;
-                  });
-                }else{
-                  swal("哎呀>_<",data.errMsg.message,"error");
-                };
-
-              })
-              .fail(function() {
-                swal("创建失败！", "创建失败", "error");
-              })
-              .always(function() {
-                console.log("complete");
-              });
-
-      return false;
-    });
-    // markdown插件
-    var textarea = $('#text'),
-        toolbar = $('<div class="markdown-editor col-sm-12" id="md-button-bar"></div>').insertBefore(textarea.parent())
-        preview = $('<div id="md-preview" class="md-hidetab"></div>').insertAfter('.markdown-editor');
-
-    var options = {};
-
-    options.strings = {
-      bold: '加粗 <strong> Ctrl+B',
-      boldexample: '加粗文字',
-
-      italic: '斜体 <em> Ctrl+I',
-      italicexample: '斜体文字',
-
-      link: '链接 <a> Ctrl+L',
-      linkdescription: '请输入链接描述',
-
-      quote:  '引用 <blockquote> Ctrl+Q',
-      quoteexample: '引用文字',
-
-      code: '代码 <pre><code> Ctrl+K',
-      codeexample: '请输入代码',
-
-      image: '图片 <img> Ctrl+G',
-      imagedescription: '请输入图片描述',
-
-      olist: '数字列表 <ol> Ctrl+O',
-      ulist: '普通列表 <ul> Ctrl+U',
-      litem: '列表项目',
-
-      heading: '标题 <h1>/<h2> Ctrl+H',
-      headingexample: '标题文字',
-
-      hr: '分割线 <hr> Ctrl+R',
-      more: '摘要分割线 <!--more--> Ctrl+M',
-
-      undo: '撤销 - Ctrl+Z',
-      redo: '重做 - Ctrl+Y',
-      redomac: '重做 - Ctrl+Shift+Z',
-
-      // fullscreen: '全屏 - Ctrl+J',
-      // exitFullscreen: '退出全屏 - Ctrl+E',
-      // fullscreenUnsupport: '此浏览器不支持全屏操作',
-
-      imagedialog: '<p><b>插入图片</b></p><p>请在下方的输入框内输入要插入的远程图片地址</p>',
-      linkdialog: '<p><b>插入链接</b></p><p>请在下方的输入框内输入要插入的链接地址</p>',
-
-      ok: '确定',
-      cancel: '取消'
-    };
-
-    var converter = new Markdown.Converter(),
-            editor = new Markdown.Editor(converter, '', options),
-            diffMatch = new diff_match_patch(), last = '', preview = $('#md-preview'),
-            mark = '@mark' + Math.ceil(Math.random() * 100000000) + '@',
-            span = '<span class="diff"></span>';
-
-    // 设置markdown
-    Markdown.Extra.init(converter, {
-      extensions  :   ["tables", "fenced_code_gfm", "def_list", "attr_list", "footnotes"]
-    });
-
-    // 自动跟随
-    converter.hooks.chain('postConversion', function (html) {
-      // clear special html tags
-      html = html.replace(/<\/?(\!doctype|html|head|body|link|title|input|select|button|textarea|style|noscript)[^>]*>/ig, function (all) {
-        return all.replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/'/g, '&#039;')
-                .replace(/"/g, '&quot;');
-      });
-
-      // clear hard breaks
-      html = html.replace(/\s*((?:<br>\n)+)\s*(<\/?(?:p|div|h[1-6]|blockquote|pre|table|dl|ol|ul|address|form|fieldset|iframe|hr|legend|article|section|nav|aside|hgroup|header|footer|figcaption|li|dd|dt)[^\w])/gm, '$2');
-
-      if (html.indexOf('<!--more-->') > 0) {
-        var parts = html.split(/\s*<\!\-\-more\-\->\s*/),
-                summary = parts.shift(),
-                details = parts.join('');
-
-        html = '<div class="summary">' + summary + '</div>'
-                + '<div class="details">' + details + '</div>';
-      }
-
-
-      var diffs = diffMatch.diff_main(last, html);
-      last = html;
-
-      if (diffs.length > 0) {
-        var stack = [], markStr = mark;
-
-        for (var i = 0; i < diffs.length; i ++) {
-          var diff = diffs[i], op = diff[0], str = diff[1]
-          sp = str.lastIndexOf('<'), ep = str.lastIndexOf('>');
-
-          if (op != 0) {
-            if (sp >=0 && sp > ep) {
-              if (op > 0) {
-                stack.push(str.substring(0, sp) + markStr + str.substring(sp));
-              } else {
-                var lastStr = stack[stack.length - 1], lastSp = lastStr.lastIndexOf('<');
-                stack[stack.length - 1] = lastStr.substring(0, lastSp) + markStr + lastStr.substring(lastSp);
-              }
-            } else {
-              if (op > 0) {
-                stack.push(str + markStr);
-              } else {
-                stack.push(markStr);
-              }
-            }
-
-            markStr = '';
-          } else {
-            stack.push(str);
-          }
-        }
-
-        html = stack.join('');
-
-        if (!markStr) {
-          var pos = html.indexOf(mark), prev = html.substring(0, pos),
-                  next = html.substr(pos + mark.length),
-                  sp = prev.lastIndexOf('<'), ep = prev.lastIndexOf('>');
-
-          if (sp >= 0 && sp > ep) {
-            html = prev.substring(0, sp) + span + prev.substring(sp) + next;
-          } else {
-            html = prev + span + next;
-          }
-        }
-      }
-
-      return html;
-    });
-
-    editor.hooks.chain('onPreviewRefresh', function () {
-      var diff = $('.diff', preview), scrolled = false;
-
-      $('img', preview).load(function () {
-        if (scrolled) {
-          preview.scrollTo(diff, {
-            offset  :   - 50
-          });
-        }
-      });
-
-      if (diff.length > 0) {
-        var p = diff.position(), lh = diff.parent().css('line-height');
-        lh = !!lh ? parseInt(lh) : 0;
-
-        if (p.top < 0 || p.top > preview.height() - lh) {
-          preview.scrollTo(diff, {
-            offset  :   - 50
-          });
-          scrolled = true;
-        }
-      }
-    });
-
-    var input = $('#text'), th = textarea.height(), ph = preview.height();
-
-    // editor.hooks.chain('enterFakeFullScreen', function () {
-    //     th = textarea.height();
-    //     ph = preview.height();
-    //     $(document.body).addClass('fullscreen');
-    //     var h = $(window).height() - toolbar.outerHeight();
-
-    //     textarea.css('height', h);
-    //     preview.css('height', h);
-    // });
-
-    // editor.hooks.chain('enterFullScreen', function () {
-    //     $(document.body).addClass('fullscreen');
-
-    //     var h = window.screen.height - toolbar.outerHeight();
-    //     textarea.css('height', h);
-    //     preview.css('height', h);
-    // });
-
-    // editor.hooks.chain('exitFullScreen', function () {
-    //     $(document.body).removeClass('fullscreen');
-    //     textarea.height(th);
-    //     preview.height(ph);
-    // });
-
-    editor.run();
-
-    // 编辑预览切换
-    var edittab = $('#md-button-bar').prepend('<div class="md-edittab"><a href="#md-editarea" class="active">撰写</a><a href="#md-preview">预览</a></div>'),
-            editarea = $(textarea.parent()).attr("id", "md-editarea");
-
-    $(".md-edittab a").click(function() {
-      $(".md-edittab a").removeClass('active');
-      $(this).addClass("active");
-      $("#md-editarea, #md-preview").addClass("md-hidetab");
-
-      var selected_tab = $(this).attr("href"),
-              selected_el = $(selected_tab).removeClass("md-hidetab");
-
-      // 预览时隐藏编辑器按钮
-      if (selected_tab == "#md-preview") {
-        $("#md-button-row").addClass("md-visualhide");
-      } else {
-        $("#md-button-row").removeClass("md-visualhide");
-      }
-
-      // 预览和编辑窗口高度一致
-      $("#md-preview").outerHeight($("#md-editarea").innerHeight());
-
-      return false;
-    });
-  })
-
-</script>
 </body>
+<script
+	src="/plugin/NextStepWebs-simplemde-markdown-editor/dist/simplemde.min.js"></script>
+<script
+	src="https://cdn.jsdelivr.net/highlight.js/latest/highlight.min.js"></script>
+<!-- 全局js -->
+<script src="/js/basic/jquery.min.js"></script>
+<script src="/plugin/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+<!-- 自定义js -->
+<script src="/js/basic/content.js"></script>
+<script src="/plugin/sweetalert/js/sweetalert.min.js"></script>
+<script type="text/javascript">
+	//Most options demonstrate the non-default behavior
+
+	var simplemde = new SimpleMDE(
+			{
+				element : document.getElementById("zeqi-markdown-content"),
+
+				autofocus : true,
+				/*
+				autosave : {
+					enabled : true,
+					uniqueId : "article-id",
+					delay : 10000,
+				},
+
+				blockStyles: {
+				    bold: "__",
+				    italic: "_"
+				},
+				hideIcons: ["guide", "heading"],
+				initialValue: "Hello world!",
+				 */
+
+				forceSync : true,
+				indentWithTabs : false,
+				insertTexts : {
+					horizontalRule : [ "", "\n\n-----\n\n" ],
+					image : [ "![](http://", ")" ],
+					link : [ "[", "](http://)" ],
+					table : [
+							"",
+							"\n\n| Column 1 | Column 2 | Column 3 |\n| -------- | -------- | -------- |\n| Text     | Text      | Text     |\n\n" ],
+				},
+				lineWrapping : false,
+				parsingConfig : {
+					allowAtxHeaderWithoutSpace : true,
+					strikethrough : false,
+					underscoresBreakWords : true,
+				},
+				placeholder : "请开始你的表演...",
+
+				/*
+				previewRender: function(plainText) {
+				    return customMarkdownParser(plainText); // Returns HTML from a custom parser
+				},
+				 */
+				/*
+				previewRender: function(plainText, preview) { // Async method
+				    setTimeout(function(){
+				         preview.innerHTML = this.parent.markdown(plainText);
+				    }, 250);
+
+				    return "Loading...";
+				},
+				 */
+
+				promptURLs : true,
+				renderingConfig : {
+					singleLineBreaks : false,
+					codeSyntaxHighlighting : true,
+				},
+				shortcuts : {
+					drawTable : "Cmd-Alt-T"
+				},
+				showIcons : [ "code", "table" ],
+				spellChecker : false,
+				status : false,
+				status : [ "autosave", "lines", "words", "cursor" ], // Optional usage
+				status : [ "autosave", "lines", "words", "cursor", {
+					className : "keystrokes",
+					defaultValue : function(el) {
+						this.keystrokes = 0;
+						el.innerHTML = "0 Keystrokes";
+					},
+					onUpdate : function(el) {
+						el.innerHTML = ++this.keystrokes + " Keystrokes";
+					}
+				} ], // Another optional usage, with a custom status bar item that counts keystrokes
+				styleSelectedText : false,
+				tabSize : 4,
+				toolbar : false,
+				toolbarTips : true,
+				toolbar : [ "bold", "italic", "heading", "|", "quote", "link",
+						"image", "table", "preview", "code", "guide" ],
+			});
+
+	//document.body.innerHTML = simplemde.options.previewRender(simplemde.value());
+	//alert(simplemde.options.previewRender("This is *example* Markdown"));
+	//alert(simplemde.markdown(simplemde.value()));
+
+	$("#upMarkDown").click(function(event) {
+		var title = $("#zeqi-markdown-title").val();
+		var textView = simplemde.markdown(simplemde.value());
+		/*
+		if(title == "" || textView == ""){
+		  swal("小仔>_<","东西都没写完就想交？","error");
+		  return false;
+		}
+		if(isOk == false){
+		  swal("小仔>_<","你看看你标题合格吗？","error");
+		  return false;
+		}
+		 */
+		$.ajax({
+			url : '/web/article',
+			type : 'post',
+			dataType : 'json',
+			data : {
+				"title" : title,
+				"content" : textView
+			}
+		}).done(function(data) {
+			if (data.status == true) {
+				swal({
+					title : "创建成功>_< ",
+					text : "你已成功创建！",
+					type : "success",
+					confirmButtonColor : "#DD6B55",
+					confirmButtonText : "OK",
+					closeOnConfirm : true
+				}, function() {
+					location.href = '/web/article/' + data.jsonStr;
+				});
+			} else {
+				swal("哎呀>_<", data.errMsg.message, "error");
+			}
+			;
+
+		}).fail(function() {
+			swal("创建失败！", "创建失败", "error");
+		}).always(function() {
+			console.log("complete");
+		});
+
+		return false;
+	});
+</script>
 </html>

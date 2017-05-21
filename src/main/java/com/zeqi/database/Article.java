@@ -19,7 +19,7 @@ public class Article {
     private String content;
     private int readCount;
     private int commentCount;
-    private String createTime;
+    private long createTime;
     private StudentInfo studentInfo;
 
     @Id
@@ -47,11 +47,11 @@ public class Article {
     @Basic
     @Column(name = "create_time")
     @NotNull
-	public String getCreateTime() {
+	public long getCreateTime() {
 		return createTime;
 	}
 
-	public void setCreateTime(String createTime) {
+	public void setCreateTime(long createTime) {
 		this.createTime = createTime;
 	}
 

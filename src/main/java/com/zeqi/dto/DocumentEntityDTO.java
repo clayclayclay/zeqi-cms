@@ -1,5 +1,6 @@
 package com.zeqi.dto;
 
+import java.util.Map;
 
 /**
  * Created by Max on 2016/10/16.
@@ -10,6 +11,7 @@ public class DocumentEntityDTO {
     private String uploadTime;
     private String stuName;
     private String downloadUrl;
+    private Map<String, String> apiConfig;
     
 	public int getId() {
 	
@@ -47,6 +49,13 @@ public class DocumentEntityDTO {
 	}
 	public void setDownloadUrl(String downloadUrl) {
 		this.downloadUrl = downloadUrl;
+	}
+	public Map<String, String> getApiConfig() {
+	
+		return apiConfig;
+	}
+	public void setApiConfig(Map<String, String> apiConfig) {
+		this.apiConfig = apiConfig;
 	}
 	
 	

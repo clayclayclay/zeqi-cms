@@ -13,7 +13,7 @@ import java.sql.Timestamp;
 public class DocumentInfo {
     private int id;
     private String documentName;
-    private String createTime;
+    private long createTime;
     private StudentInfo studentInfo;
 
     @Id
@@ -43,11 +43,11 @@ public class DocumentInfo {
     @Basic
     @Column(name = "create_time")
     @NotNull
-    public String getCreateTime() {
+    public long getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(String createTime) {
+    public void setCreateTime(long createTime) {
         this.createTime = createTime;
     }
 

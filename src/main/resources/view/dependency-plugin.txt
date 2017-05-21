@@ -1,3 +1,5 @@
-markdown-editor-plugin: simplemde-markdown-editor
+1.markdown-editor-plugin: simplemde-markdown-editor
 https://github.com/NextStepWebs/simplemde-markdown-editor
-
+2.marked: marked-0.3.6
+use: convert md to html 
+https://github.com/chjj/marked

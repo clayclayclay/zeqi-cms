@@ -47,10 +47,14 @@ article:
     perPageArticleNum: 5
   apiConfig:
     getArticlesUrl: /web/articles/
+    getArticlesGuyUrl: /web/articles/guy/
     getArticleUrl: /web/article/
+    getArticleGuyUrl: /web/article/guy/
     postArticleUrl: /web/article/
+    postArticlePageUrl: /web/articleToUpdate/
     deleteArticleUrl: /web/article/
     updateArticleUrl: /web/article/
+    
 
   
 document:

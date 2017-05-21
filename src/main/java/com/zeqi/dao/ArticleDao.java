@@ -1,13 +1,15 @@
 package com.zeqi.dao;
 
-import com.zeqi.database.Article;
+import com.zeqi.database.Notice;
 
 import java.util.List;
 
 /**
- * Created by Max on 2016/11/13.
+ * Created by Nanguoyu on 2016/5/31.
  */
 public interface ArticleDao {
 
-    public List<Article> getArticleListByPage(String[] pageInfo);
+	public Object paginationQuery(int firstResult, int maxResults, Class<?> entityType);
+	
+	public Object paginationQuery(int firstResult, int maxResults, Class<?> entityType,  String field, String id);
 }

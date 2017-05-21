@@ -1,0 +1,91 @@
+
+*{
+    padding: 0;
+    margin: 0;  
+}
+
+body{
+    background-color: #FFF;
+    font-family: AvenirLT-Light, Arial, Helvetica, sans-serif;
+    overflow: hidden;
+}
+
+#mWrapper{
+    margin: 100px 30px 30px 30px;
+    overflow: hidden;
+    position: relative;
+}
+
+img.fullScreen {
+    position: absolute; 
+}
+
+#logo{
+    position: absolute;
+    top: 40px;
+    cursor:pointer;
+    width: 98px;
+    height: 23px;   
+}
+
+#logo img{
+    position: absolute;
+    top: 0px; 
+    left: 0px;  
+}
+
+#logo img.hover{
+    z-index: 1;
+    display: none;
+}
+
+
+a.h2{
+    color: #00F000;
+    position: absolute;
+    display: block;
+    z-index:10;
+    font-size: 160px;
+    font-family: AvenirLT-Heavy, Arial, Helvetica, sans-serif;
+    top: 39%;
+    text-align:center;
+    padding: 0 45px 0 45px;
+}
+
+
+a.p{
+    color: #FFFFFF;
+    position: absolute;
+    display: block;
+    z-index:10;
+    font-size: 28px;
+    font-family: AvenirLT-Light, Arial, Helvetica, sans-serif;
+    bottom: 80px;
+    text-align:center;
+    padding: 0 45px 0 45px;
+}
+
+strong{
+    font-weight: normal;
+    font-family: AvenirLT-Medium, Arial, Helvetica, sans-serif;
+        
+}
+
+a,
+a img{
+    text-decoration: none;
+    border: none;
+}
+
+
+
+@media all and (max-width: 800px), screen and (max-height: 500px)  {
+    a.h2{
+        font-size: 70px;
+    }
+    
+    
+    a.p{
+        font-size: 18px;
+    }
+}

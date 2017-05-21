@@ -18,16 +18,15 @@ package com.zeqi.beanconfig;
 import java.beans.PropertyVetoException;
 import java.util.Properties;
 
-import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
-import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
-import org.springframework.orm.hibernate4.support.OpenSessionInViewFilter;
-import org.springframework.orm.hibernate4.HibernateTransactionManager;
+import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
+import org.springframework.orm.hibernate5.support.OpenSessionInViewFilter;
+import org.springframework.orm.hibernate5.HibernateTransactionManager;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
@@ -67,7 +66,6 @@ public class JpaConfig {
 		hibernateProperties.put("hibernate.dialect", env.getProperty("spring.jpa.properties.hibernate.dialect"));
 		hibernateProperties.put("hibernate.show_sql", env.getProperty("spring.jpa.properties.hibernate.show-sql"));
 		hibernateProperties.put("hibernate.hbm2ddl.auto", env.getProperty("spring.jpa.properties.hibernate.ddl-auto"));
-
 		sessionFactoryBean.setHibernateProperties(hibernateProperties);
 		return sessionFactoryBean;
 	}

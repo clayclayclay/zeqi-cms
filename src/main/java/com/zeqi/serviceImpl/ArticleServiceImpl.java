@@ -1,6 +1,8 @@
 package com.zeqi.serviceImpl;
 
+import com.zeqi.dao.ArticleDao;
 import com.zeqi.dao.BasicDao;
+import com.zeqi.daoImpl.ArticleDaoImpl;
 import com.zeqi.database.Article;
 import com.zeqi.database.StudentInfo;
 import com.zeqi.dataconfig.ArticleConfig;
@@ -8,6 +10,8 @@ import com.zeqi.dto.ArticleEntityDTO;
 import com.zeqi.dto.ArticleIndexDTO;
 import com.zeqi.json.BasicJson;
 import com.zeqi.service.ArticleService;
+import com.zeqi.util.DateConvertUtil;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
@@ -29,6 +33,8 @@ public class ArticleServiceImpl implements ArticleService {
 	private BasicDao basicDao;
 	@Autowired
 	private ArticleConfig articleConfig;
+	@Autowired
+	private ArticleDao articleDao;
 
 	/**
 	 * 作用：发布文章
@@ -43,8 +49,7 @@ public class ArticleServiceImpl implements ArticleService {
 		boolean isWrited;
 		article.setTitle(request.getParameter("title"));
 		article.setContent(request.getParameter("content"));
-		Timestamp timestamp = new Timestamp(new Date().getTime());
-		article.setCreateTime(timestamp.toString());
+		article.setCreateTime(DateConvertUtil.getNowLongTime());
 		article.setStudentInfo((StudentInfo)basicDao.get(StudentInfo.class, ((StudentInfo) request.getSession().getAttribute("student_info")).getStuId()));
 		article.setCommentCount(0);
 		isWrited = basicDao.save(article);
@@ -98,6 +103,7 @@ public class ArticleServiceImpl implements ArticleService {
 			basicJson.setStatus(true);
 			basicJson.getErrMsg().setCode("200");
 			basicJson.getErrMsg().setMessage("更新成功");
+			basicJson.setJsonStr(article.getId());
 		} else {
 			basicJson.setStatus(false);
 			basicJson.getErrMsg().setCode("04003");
@@ -113,7 +119,8 @@ public class ArticleServiceImpl implements ArticleService {
 	 * @return
 	 */
 	@Override
-	public ArticleEntityDTO getArticle(int articleId) {
+	public  Map<String, Object>  getArticle(int articleId) {
+		Map<String, Object> map = new HashMap<String, Object>();
 		Article article;
 		ArticleEntityDTO articleEntityDTO;
 		article = (Article) basicDao.get(Article.class, articleId);
@@ -122,9 +129,14 @@ public class ArticleServiceImpl implements ArticleService {
 			articleEntityDTO.setArticleId(article.getId());
 			articleEntityDTO.setTitle(article.getTitle());
 			articleEntityDTO.setCommentCount(article.getCommentCount());
-			articleEntityDTO.setWriteTime(article.getCreateTime());
+			articleEntityDTO.setWriteTime(DateConvertUtil.longToString(article.getCreateTime()));
 			articleEntityDTO.setContent(article.getContent());
-			return articleEntityDTO;
+			Map<String, String> articleConfig = new HashMap<String, String>();
+			articleConfig.put("postArticleUrl", this.articleConfig.getApiConfig().get("postArticleUrl"));
+			articleConfig.put("postArticlePageUrl", this.articleConfig.getApiConfig().get("postArticlePageUrl"));	
+			map.put("articleEntityDTO", articleEntityDTO);
+			map.put("articleConfig", articleConfig);
+			return map;
 		} else {
 			return null;
 		}
@@ -142,7 +154,7 @@ public class ArticleServiceImpl implements ArticleService {
 		List<Article> articleList;
 		int maxResults = Integer.valueOf(articleConfig.getPaging().get("perPageArticleNum"));
 		int firstResult = (Integer.valueOf(page) - 1) * maxResults;
-		articleList = (List<Article>) basicDao.paginationQuery(firstResult, maxResults, Article.class);
+		articleList = (List<Article>) articleDao.paginationQuery(firstResult, maxResults, Article.class);
 		List<ArticleIndexDTO> articleDTOList = new ArrayList<ArticleIndexDTO>();
 		for (Article article : articleList) {
 			ArticleIndexDTO articleDTO = new ArticleIndexDTO();
@@ -150,7 +162,7 @@ public class ArticleServiceImpl implements ArticleService {
 			articleDTO.setTitle(article.getTitle());
 			articleDTO.setAuthor(article.getStudentInfo().getName());
 			articleDTO.setCommentCount(article.getCommentCount());
-			articleDTO.setWriteTime(article.getCreateTime());
+			articleDTO.setWriteTime(DateConvertUtil.longToString(article.getCreateTime()));
 			articleDTOList.add(articleDTO);
 		}
 		Double articleNum = Double.valueOf(basicDao.getTotalCount(Article.class));
@@ -161,7 +173,8 @@ public class ArticleServiceImpl implements ArticleService {
 		articleConfig.put("totalPages", String.valueOf(totalPages));
 		articleConfig.put("currentPage", page);
 		articleConfig.put("getArticleUrl", this.articleConfig.getApiConfig().get("getArticleUrl"));
-		articleConfig.put("getArticlesUrl", this.articleConfig.getApiConfig().get("getArticlesUrl"));		
+		articleConfig.put("getArticleGuyUrl", this.articleConfig.getApiConfig().get("getArticleGuyUrl"));	
+		articleConfig.put("getArticlesUrl", this.articleConfig.getApiConfig().get("getArticlesUrl"));	
 		map.put("articleDTOList", articleDTOList);
 		map.put("articleConfig", articleConfig);
 		return map;
@@ -179,7 +192,7 @@ public class ArticleServiceImpl implements ArticleService {
 		List<Article> articleList;
 		int maxResults = Integer.valueOf(articleConfig.getPaging().get("perPageArticleNum"));
 		int firstResult = (Integer.valueOf(page) - 1) * maxResults;
-		articleList = (List<Article>) basicDao.paginationQuery(firstResult, maxResults, Article.class, "studentInfo.stuId", stuId);
+		articleList = (List<Article>) articleDao.paginationQuery(firstResult, maxResults, Article.class, "studentInfo.stuId", stuId);
 		List<ArticleIndexDTO> articleDTOList = new ArrayList<ArticleIndexDTO>();
 		for (Article article : articleList) {
 			ArticleIndexDTO articleDTO = new ArticleIndexDTO();
@@ -187,7 +200,7 @@ public class ArticleServiceImpl implements ArticleService {
 			articleDTO.setTitle(article.getTitle());
 			articleDTO.setAuthor(article.getStudentInfo().getName());
 			articleDTO.setCommentCount(article.getCommentCount());
-			articleDTO.setWriteTime(article.getCreateTime());
+			articleDTO.setWriteTime(DateConvertUtil.longToString(article.getCreateTime()));
 			articleDTOList.add(articleDTO);
 		}
 		Double articleNum = Double.valueOf(basicDao.getTotalCount("studentInfo.stuId", stuId, Article.class));
@@ -198,7 +211,9 @@ public class ArticleServiceImpl implements ArticleService {
 		articleConfig.put("totalPages", String.valueOf(totalPages));
 		articleConfig.put("currentPage", page);
 		articleConfig.put("getArticleUrl", this.articleConfig.getApiConfig().get("getArticleUrl"));
+		articleConfig.put("getArticleGuyUrl", this.articleConfig.getApiConfig().get("getArticleGuyUrl"));	
 		articleConfig.put("getArticlesUrl", this.articleConfig.getApiConfig().get("getArticlesUrl"));
+		articleConfig.put("getArticlesGuyUrl", this.articleConfig.getApiConfig().get("getArticlesGuyUrl"));
 		map.put("articleDTOList", articleDTOList);
 		map.put("articleConfig", articleConfig);
 		return map;

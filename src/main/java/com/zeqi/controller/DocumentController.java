@@ -76,6 +76,10 @@ public class DocumentController {
     }
 
 
+    /**
+     * 作用：管理文档（查看，上传，删除）
+     * @return
+     */
     @RequestMapping(value="/documents/guy/{page}", method=RequestMethod.GET)
     public String mangeDocument(Map<String, Object> model, @PathVariable String page) {
     	Map<String, Object> map;

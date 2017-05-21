@@ -48,14 +48,29 @@ public class ArticleController {
         return basicJson;
     }
 
+    
+    /**
+     * 作用：修改文章前跳转
+     * @param request
+     */
+    @RequestMapping(value = "/articleToUpdate/{id}", method = RequestMethod.GET)
+    public String articleToUpdate(Map<String, Object> model, @PathVariable int id, HttpServletRequest request) {
+    	Map<String, Object> map = articleService.getArticle(id);
+        model.put("article", map.get("articleEntityDTO"));
+        return "article/article_to_update";
+    }
+    
+    
 
     /**
      * 作用：修改文章
      * @param request
      */
     @RequestMapping(value = "/article/{id}", method = RequestMethod.PUT)
+    @ResponseBody
     public BasicJson updateArticle(@PathVariable int id, HttpServletRequest request) {
-        BasicJson basicJson;
+System.out.println(id);
+    	BasicJson basicJson;
         basicJson = articleService.updateArticle(id, request);
         return basicJson;
     }
@@ -66,9 +81,21 @@ public class ArticleController {
      */
     @RequestMapping(value = "/article/{id}", method = RequestMethod.GET)
     public String getArticle(Map<String, Object> model, @PathVariable int id, HttpServletRequest request) {
-        ArticleEntityDTO articleEntityDTO = articleService.getArticle(id);
-        model.put("article", articleEntityDTO);
+    	Map<String, Object> map = articleService.getArticle(id);
+        model.put("article", map.get("articleEntityDTO"));
         return "article/article";
+    }
+    
+    /**
+     * 作用：读取文章
+     * @param request
+     */
+    @RequestMapping(value = "/article/guy/{id}", method = RequestMethod.GET)
+    public String getArticleByGuy(Map<String, Object> model, @PathVariable int id, HttpServletRequest request) {
+    	Map<String, Object> map = articleService.getArticle(id);
+        model.put("article", map.get("articleEntityDTO"));
+        model.put("articleConfig", map.get("articleConfig"));
+        return "article/article_guy";
     }
 
 
@@ -90,7 +117,7 @@ public class ArticleController {
      * @return
      */
     @RequestMapping(value = "/articles/guy/{page}", method = RequestMethod.GET)
-    public String getArticleListInGuy(Map<String, Object> model, @PathVariable String page, HttpServletRequest request) {
+    public String getArticleListByGuy(Map<String, Object> model, @PathVariable String page, HttpServletRequest request) {
     	Map<String, Object> map;
     	map = articleService.getArticleList(page, ((StudentInfo) request.getSession().getAttribute("student_info")).getStuId());
         model.put("articleList", map.get("articleDTOList"));

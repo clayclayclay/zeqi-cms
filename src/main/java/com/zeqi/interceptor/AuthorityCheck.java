@@ -14,16 +14,13 @@ public class AuthorityCheck extends HandlerInterceptorAdapter {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         System.out.println("AuthorityCheck.class'preHandle() is called");
+        System.out.println(request.getRequestURL());
         if (request.getSession().getAttribute("is_login") != null) {
             return true;
         }
         else {
-//            ThreadLocal<String> threadLocal = new ThreadLocal<String>();
-//            threadLocal.set(request.getRequestURL().toString());
-//            request.setAttribute("before_request", request.getRequestURL().toString());
-//            response.sendRedirect("/view/html/reLogin.html");
             request.getSession().setAttribute("before_request", request.getRequestURL().toString());
-            response.sendRedirect("/web/guy/reLogin");
+            response.sendRedirect("/html/re_login.html");
             return false;
         }
     }

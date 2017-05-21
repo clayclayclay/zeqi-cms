@@ -9,6 +9,8 @@ import com.zeqi.json.BasicJson;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import java.util.List;
 import java.util.Map;
 
@@ -36,7 +38,7 @@ public interface UserCenterService {
      * @param multiRequest 文件上传请求对象multiRequest
      * @return 返回相应上传头像的basicjson对象
      */
-    BasicJson uploadHeadPic(MultipartHttpServletRequest multiRequest);
+    BasicJson uploadHeadPic(MultipartHttpServletRequest multiRequest, HttpServletResponse response);
 
     /**
      * 修改个性背景图片

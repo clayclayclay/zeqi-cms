@@ -11,8 +11,10 @@
 <link
 	href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css"
 	rel="stylesheet">
-<link href="/css/basic/bootstrap.min.css" rel="stylesheet" />
-<link href="/css/basic/font-awesome.min.css" rel="stylesheet" />
+<link href="/plugin/bootstrap-3.3.7-dist/css/bootstrap.min.css"
+    rel="stylesheet">
+<link href="/plugin/font-awesome-4.7.0/css/font-awesome.min.css"
+    rel="stylesheet">
 <link href="/css/basic/animate.css" rel="stylesheet" />
 <link href="/css/basic/style.css" rel="stylesheet" />
 
@@ -51,7 +53,7 @@
 										-->
 										<td class="project-people"></td>
 										<td class="project-actions"><a
-											th:href="${documentConfig.downloadDocumentPath} + ${documentConfig.id}"
+											th:href="${document.downloadUrl}"
 											class="btn btn-white btn-sm"><i class="fa fa-download"></i>
 												下载 </a></td>
 									</tr>
@@ -70,7 +72,7 @@
 
 	<!-- 全局js -->
 	<script src="/js/basic/jquery.min.js"></script>
-	<script src="/js/basic/bootstrap.min.js"></script>
+	<script src="/plugin/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
 	<!-- 自定义js -->
 	<script src="/js/basic/content.js"></script>
 

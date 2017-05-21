@@ -15,8 +15,6 @@ import org.springframework.stereotype.Repository;
 import java.io.Serializable;
 import java.util.List;
 
-import javax.transaction.Transactional;
-
 /**
  * Created by Max on 2016/4/11.
  */
@@ -26,10 +24,12 @@ public class BasicDaoImpl implements BasicDao {
 	@Autowired
 	private SessionFactory sessionFactory;
 
+	
+	private int a;
+	
 	public Session getSession() {
 		return sessionFactory.getCurrentSession();
 	}
-
 	/**
 	 * 获取一条记录（实）体信息
 	 *
@@ -168,7 +168,6 @@ public class BasicDaoImpl implements BasicDao {
 	public boolean save(Object obj) {
 		Session session = getSession();
 		Transaction transaction = session.getTransaction();
-		// Transaction transaction = session.beginTransaction();
 		try {
 			transaction.begin();
 			System.out.println("~~~~~");

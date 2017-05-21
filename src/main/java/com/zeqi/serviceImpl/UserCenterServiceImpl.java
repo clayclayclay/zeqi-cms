@@ -20,7 +20,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
@@ -61,7 +64,8 @@ public class UserCenterServiceImpl implements UserCenterService {
             basicJson.setStatus(true);
             basicJson.getErrMsg().setCode("200");
             basicJson.getErrMsg().setMessage("登陆成功");
-            basicJson.setJsonStr(((StudentInfo) request.getSession().getAttribute("student_info")).getHeadPic());
+            String headPic = ((StudentInfo) request.getSession().getAttribute("student_info")).getHeadPic();
+            basicJson.setJsonStr(headPic);
             request.getSession().setAttribute("is_login", true);
         }
         else if (code.equals("101")) {
@@ -197,7 +201,7 @@ public class UserCenterServiceImpl implements UserCenterService {
      * @return 返回相应上传头像的basicjson对象
      */
     @Override
-    public BasicJson uploadHeadPic(MultipartHttpServletRequest multiRequest){
+    public BasicJson uploadHeadPic(MultipartHttpServletRequest multiRequest, HttpServletResponse response){
         BasicJson basicJson = new BasicJson(false);
         Map<String,MultipartFile> fileMap = multiRequest.getFileMap();
 
@@ -219,9 +223,9 @@ public class UserCenterServiceImpl implements UserCenterService {
         for (String key : fileMap.keySet()) {
 
             System.out.println("key的值为:" + key);
-
             MultipartFile file = fileMap.get(key);
             String fileName = file.getOriginalFilename();
+            System.out.println("file name is: " + fileName);
             try {
             	String uploadPath = this.getClass().getClassLoader().getResource(userResourceConfig.getResourceConfig().get("imgPath")).getFile();
                 FileUtils.copyInputStreamToFile(file.getInputStream(), new File(uploadPath, fileName));
@@ -230,13 +234,9 @@ public class UserCenterServiceImpl implements UserCenterService {
                 basicDao.save(StudentInfo);
                 multiRequest.getSession().setAttribute("head_pic", picUrl);
                 basicJson.setStatus(true);
-
-//                basicJson.setJsonStr(StudentInfo);
-
                 basicJson.getErrMsg().setCode("200");
                 basicJson.getErrMsg().setMessage("上传头像成功");
                 basicJson.setJsonStr(picUrl);
-
             } catch (IOException e) {
                 basicJson.setStatus(false);
                 basicJson.getErrMsg().setCode("01005");

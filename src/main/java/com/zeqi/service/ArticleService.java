@@ -17,7 +17,7 @@ public interface ArticleService {
 
     BasicJson updateArticle(int id, HttpServletRequest request);
 
-    ArticleEntityDTO getArticle(int articleId);
+    Map<String, Object> getArticle(int articleId);
 
     Map<String, Object> getArticleList(String page);
     

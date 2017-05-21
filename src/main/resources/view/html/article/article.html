@@ -8,33 +8,44 @@
 <meta name="keywords" content="择栖管理后台" />
 <meta name="description" content="择栖工作室nb" />
 <link rel="shortcut icon" href="/img/index/logo.jpg" />
-<link href="/css/basic/bootstrap.min.css" rel="stylesheet" />
-<link href="/css/basic/font-awesome.min.css" rel="stylesheet" />
+<link href="/plugin/bootstrap-3.3.7-dist/css/bootstrap.min.css"
+    rel="stylesheet">
+<link href="/plugin/font-awesome-4.7.0/css/font-awesome.min.css"
+    rel="stylesheet">
 <link href="/css/basic/animate.css" rel="stylesheet" />
 <link href="/css/basic/style.css" rel="stylesheet" />
+
 </head>
 <body class="gray-bg">
-<div class="wrapper wrapper-content  animated fadeInRight article">
-  <div class="row">
-    <div class="col-lg-10 col-lg-offset-1">
-      <div class="ibox">
-        <div class="ibox-content">
-          <div class="text-center article-title">
-            <h1 th:text="${article.title}"></h1>
-          </div >
-            <span th:utext="${article.content}"></span>
-        </div>
-      </div>
-    </div>
-  </div>
-
-</div>
+	<div class="wrapper wrapper-content  animated fadeInRight article">
+		<div class="row">
+			<div class="col-lg-10 col-lg-offset-1">
+				<div class="ibox">
+					<div class="ibox-content">
+						<div class="text-center article-title">
+							<h1 th:text="${article.title}"></h1>
+						</div>
+						<span id="content"></span>
+					</div>
+				</div>
+			</div>
+		</div>
+		<input type="hidden" id="contentHidden" th:value="${article.content}">
+	</div>
 
 	<!-- 全局js -->
 	<script src="/js/basic/jquery.min.js"></script>
-	<script src="/js/basic/bootstrap.min.js"></script>
+	<script src="/plugin/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
 	<!-- 自定义js -->
 	<script src="/js/basic/content.js"></script>
+	<script src="/plugin/marked-0.3.6/lib/marked.js"></script>
+
+	<script>
+		var contentHidden = document.getElementById('contentHidden');
+		var d = contentHidden.value;
+		document.getElementById('content').innerHTML = marked(d);
+	</script>
+
 
 
 </body>
