@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
  * Created by Max on 2016/10/18.
  */
 @Entity
-@Table(name = "album", schema = "", catalog = "zeqi")
+@Table(name = "album")
 public class Album {
     private int id;
     private String name;

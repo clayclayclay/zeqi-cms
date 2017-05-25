@@ -7,7 +7,7 @@ import javax.validation.constraints.NotNull;
  * Created by Max on 2016/10/11.
  */
 @Entity
-@Table(name = "news", schema = "", catalog = "zeqi")
+@Table(name = "news")
 public class Notice {
     private int newsId;
     private String content;

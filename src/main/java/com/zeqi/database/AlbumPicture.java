@@ -9,7 +9,7 @@ import java.sql.Timestamp;
  * Created by Max on 2016/10/18.
  */
 @Entity
-@Table(name = "album_picture", schema = "", catalog = "zeqi")
+@Table(name = "album_picture")
 public class AlbumPicture {
     private int id;
     private String createTime;

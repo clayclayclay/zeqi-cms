@@ -7,7 +7,7 @@ import javax.validation.constraints.NotNull;
  * Created by Max on 2016/10/11.
  */
 @Entity
-@Table(name = "book_loan", schema = "", catalog = "zeqi")
+@Table(name = "book_loan")
 public class BookLoan {
     private int id;
     private String borrowTime;

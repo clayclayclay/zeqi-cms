@@ -11,7 +11,7 @@ import java.sql.Timestamp;
  * Created by Max on 2016/10/11.
  */
 @Entity
-@Table(name = "article", schema = "", catalog = "zeqi")
+@Table(name = "article")
 public class Article {
 
     private int id;
