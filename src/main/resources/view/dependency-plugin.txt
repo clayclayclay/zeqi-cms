@@ -1,5 +1,9 @@
 1.markdown-editor-plugin: simplemde-markdown-editor
 https://github.com/NextStepWebs/simplemde-markdown-editor
+
 2.marked: marked-0.3.6
 use: convert md to html 
 https://github.com/chjj/marked
+
+3.bootstrap-pagination-plugin: paging
+https://github.com/lyonlai/bootstrap-paginator/
