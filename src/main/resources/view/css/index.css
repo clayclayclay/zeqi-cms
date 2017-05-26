@@ -270,17 +270,14 @@ a:hover{
 
 .article{
 	width: 100%;
-
 	background-repeat: no-repeat;
 	background-size: cover;
 	background-position: center center;
 	overflow: hidden;
-	
 }
 
 
 #section1{
-	
 	background-image: url('../img/index/back1.jpg');
 	background-attachment: fixed;
 }
