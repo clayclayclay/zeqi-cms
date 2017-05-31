@@ -112,10 +112,11 @@ img {
 				uploadFileName =  originFileName;
 			}
 			var formData = new FormData();
-			formData.append('croppedImage', blob, uploadFileName);
+			formData.append('avator', blob, uploadFileName);
 			$.ajax('/web/guy/headPic', {
 				method : "POST",
 				data : formData,
+				dataType : 'json',
 				processData : false,
 				contentType : false,
 				success : function(data) {

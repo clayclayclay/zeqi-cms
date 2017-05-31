@@ -185,7 +185,7 @@
 		$("#upBackImg").click(function(event) { //点击上传图片
 			var file = $("#upimg")[0].files[0];
 			var formData = new FormData();
-			formData.append('logo_url', file);
+			formData.append('background', file);
 
 			$.ajax({
 				url : '/web/guy/backgroundPic',

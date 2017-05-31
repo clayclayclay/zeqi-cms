@@ -15,6 +15,7 @@ public class DocumentInfo {
     private String documentName;
     private long createTime;
     private StudentInfo studentInfo;
+    private String documentPath;
 
     @Id
     @Column(name = "id")
@@ -50,8 +51,20 @@ public class DocumentInfo {
     public void setCreateTime(long createTime) {
         this.createTime = createTime;
     }
+    
+    
+    @Basic
+    @Column(name = "document_path")
+    @NotNull
+    public String getDocumentPath() {
+		return documentPath;
+	}
 
-    @ManyToOne(cascade=CascadeType.MERGE)
+	public void setDocumentPath(String documentPath) {
+		this.documentPath = documentPath;
+	}
+
+	@ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name="stuId")
     public StudentInfo getStudentInfo() {
 		return studentInfo;

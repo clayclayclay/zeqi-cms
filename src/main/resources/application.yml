@@ -29,10 +29,8 @@ user:
     getUserUrl:
     updateUserUrl:
   resourceConfig:
-    imgPath: /user/avatar/
-    imgUrl: /avatar/
-    backgroundImgPath: /user/background/
-    backgroundImgUrl: /background/
+    imgPath: https://s3-ap-southeast-1.amazonaws.com/zeqiclub/user-avatar/
+    backgroundImgPath: https://s3-ap-southeast-1.amazonaws.com/zeqiclub/user-background/
       
 
 
@@ -66,8 +64,7 @@ document:
     deleteDocumentUrl:  /web/document/
     manageDocumentsUrl: /web/documents/guy/
   resourceConfig:
-    downloadDocumentPath: /document/
-    uploadDocumentPath: /data/document/
+    downloadDocumentPath: https://s3-ap-southeast-1.amazonaws.com/zeqiclub/document/
  
 album:
   perPageAlbumNum: 5 

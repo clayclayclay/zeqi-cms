@@ -46,6 +46,7 @@ public class CustomHandlerExceptionResolver implements HandlerExceptionResolver{
 	@Override
 	public ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response, Object handler,
 			Exception ex) {
+		System.out.println(ex.getMessage());
 		return new ModelAndView("error");
 	}
 }

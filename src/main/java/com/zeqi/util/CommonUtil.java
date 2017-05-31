@@ -35,5 +35,13 @@ public class CommonUtil {
 		String documentName = prefix + type;
 		return documentName;
 	}
+	
+	
+	public static String nameToKey(String name) {
+		String prefix = name.split("\\.")[0];
+		String suffix = name.split("\\.")[1];
+		String keyPrefix = prefix + "-" + DateConvertUtil.getNowLongTime();
+		return  (keyPrefix + "." + suffix);
+	}
 }
  

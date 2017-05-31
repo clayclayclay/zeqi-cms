@@ -36,8 +36,6 @@ public class DocumentController {
     @RequestMapping(value="/document", method= RequestMethod.POST)
     @ResponseBody
     public BasicJson addDocument(HttpServletRequest request) {
-        System.out.println(request.getSession().getAttribute("student_info"));
-        System.out.println("收到文档上传请求：addDocument() is called");
         BasicJson basicjson;
         if (request instanceof MultipartHttpServletRequest) {
             MultipartHttpServletRequest multipartHttpServletRequest = (MultipartHttpServletRequest) request;

@@ -7,25 +7,21 @@ import com.zeqi.database.Article;
 import com.zeqi.database.BookLoan;
 import com.zeqi.database.StudentAccount;
 import com.zeqi.database.StudentInfo;
-import com.zeqi.dataconfig.ArticleConfig;
-import com.zeqi.dataconfig.ConstantPath;
 import com.zeqi.dataconfig.UserResourceConfig;
-import com.zeqi.dataenum.Position;
-import com.zeqi.dto.ArticleIndexDTO;
 import com.zeqi.json.BasicJson;
+import com.zeqi.service.CommonService;
 import com.zeqi.service.UserCenterService;
-import org.apache.commons.io.FileUtils;
+import com.zeqi.util.AmazonS3ConnectionUtil;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.*;
 
 /**
@@ -47,8 +43,12 @@ public class UserCenterServiceImpl implements UserCenterService {
     @Autowired
     private UserResourceConfig userResourceConfig;
     @Autowired
-    private ArticleConfig a;
-
+    @Lazy
+    private AmazonS3ConnectionUtil amazonS3ConnectionUtil;
+    @Autowired
+    private CommonService commonService;
+    
+    
     /**
      *用户登录验证
      * @param request 封装的request请求对象
@@ -204,44 +204,28 @@ public class UserCenterServiceImpl implements UserCenterService {
     public BasicJson uploadHeadPic(MultipartHttpServletRequest multiRequest, HttpServletResponse response){
         BasicJson basicJson = new BasicJson(false);
         Map<String,MultipartFile> fileMap = multiRequest.getFileMap();
-
+        
         //边界检测，如果没有文件上传，则立即返回错误。
         if (fileMap == null) {
             System.out.println("没有文件上传");
             basicJson.getErrMsg().setCode("01005");
             return basicJson;
         }
-
-        //确定文件上传路径
-//        String headPicPath = ConstantPath.HEAD_PIC_PHYSICAL_PATH;
-
-        StudentInfo StudentInfo = (StudentInfo)multiRequest.getSession().getAttribute("student_info");
-
-//        StudentInfo = (StudentInfo)basicDao.get(StudentInfo,stuId);
-
-        //遍历fileMap，获得MultipartFile文件对象
-        for (String key : fileMap.keySet()) {
-
-            System.out.println("key的值为:" + key);
-            MultipartFile file = fileMap.get(key);
-            String fileName = file.getOriginalFilename();
-            System.out.println("file name is: " + fileName);
-            try {
-            	String uploadPath = this.getClass().getClassLoader().getResource(userResourceConfig.getResourceConfig().get("imgPath")).getFile();
-                FileUtils.copyInputStreamToFile(file.getInputStream(), new File(uploadPath, fileName));
-                String picUrl = userResourceConfig.getResourceConfig().get("imgUrl") + fileName;
-                StudentInfo.setHeadPic(picUrl);
-                basicDao.save(StudentInfo);
-                multiRequest.getSession().setAttribute("head_pic", picUrl);
-                basicJson.setStatus(true);
-                basicJson.getErrMsg().setCode("200");
-                basicJson.getErrMsg().setMessage("上传头像成功");
-                basicJson.setJsonStr(picUrl);
-            } catch (IOException e) {
-                basicJson.setStatus(false);
-                basicJson.getErrMsg().setCode("01005");
-                basicJson.getErrMsg().setMessage("上传头像失败");
-            }
+        String keyName;
+        if ((keyName = commonService.uploadObject(fileMap.get("avator"), amazonS3ConnectionUtil.getBucketAvatarName())) != null) {
+	        StudentInfo StudentInfo = (StudentInfo)multiRequest.getSession().getAttribute("student_info");
+			String headPic = userResourceConfig.getResourceConfig().get("imgPath") + keyName;
+			StudentInfo.setHeadPic(headPic);
+	        basicDao.save(StudentInfo);
+	        basicJson.setStatus(true);
+	        basicJson.getErrMsg().setCode("200");
+	        basicJson.getErrMsg().setMessage("上传头像成功");
+	        basicJson.setJsonStr(headPic);
+        }
+        else {
+            basicJson.setStatus(false);
+            basicJson.getErrMsg().setCode("01005");
+            basicJson.getErrMsg().setMessage("上传失败");
         }
         return basicJson;
     }
@@ -260,34 +244,22 @@ public class UserCenterServiceImpl implements UserCenterService {
             basicJson.getErrMsg().setCode("01006");
             return basicJson;
         }
-
-        //确定文件上传路径
-    	String uploadPath = this.getClass().getClassLoader().getResource(userResourceConfig.getResourceConfig().get("backgroundImgPath")).getFile();
-
-        StudentInfo StudentInfo = (StudentInfo)multiRequest.getSession().getAttribute("student_info");
-
-        //遍历fileMap，获得MultipartFile文件对象
-        for (String key : fileMap.keySet()) {
-
-            System.out.println("key的值为:" + key);
-
-            MultipartFile file = fileMap.get(key);
-            String fileName = file.getOriginalFilename();
-            try {
-                FileUtils.copyInputStreamToFile(file.getInputStream(), new File(uploadPath, fileName));
-                String backgroundPicUrl = userResourceConfig.getResourceConfig().get("backgroundImgUrl") + fileName;
-                StudentInfo.setBackgroundPic(backgroundPicUrl);
-                System.out.println(backgroundPicUrl);
-                basicDao.save(StudentInfo);
-                basicJson.setStatus(true);
-                basicJson.getErrMsg().setCode("200");
-                basicJson.getErrMsg().setMessage("上传个性背景图片成功");
-                basicJson.setJsonStr(backgroundPicUrl);
-            } catch (IOException e) {
-                basicJson.setStatus(false);
-                basicJson.getErrMsg().setCode("01006");
-                basicJson.getErrMsg().setMessage("上传个性背景图片失败");
-            }
+        
+        String keyName;
+        if ((keyName = commonService.uploadObject(fileMap.get("background"), amazonS3ConnectionUtil.getBucketBackgroundName())) != null) {
+	        StudentInfo StudentInfo = (StudentInfo)multiRequest.getSession().getAttribute("student_info");
+			String backgroundPic = userResourceConfig.getResourceConfig().get("backgroundImgPath") + keyName;
+			StudentInfo.setBackgroundPic(backgroundPic);
+	        basicDao.save(StudentInfo);
+	        basicJson.setStatus(true);
+	        basicJson.getErrMsg().setCode("200");
+	        basicJson.getErrMsg().setMessage("背景图片更新成功");
+	        basicJson.setJsonStr(backgroundPic);
+        }
+        else {
+            basicJson.setStatus(false);
+            basicJson.getErrMsg().setCode("01006");
+            basicJson.getErrMsg().setMessage("更新失败");
         }
         return basicJson;
     }
