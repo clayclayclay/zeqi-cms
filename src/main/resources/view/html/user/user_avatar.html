@@ -4,7 +4,8 @@
 <meta charset="UTF-8">
 <title>更新头像</title>
 <link rel="shortcut icon" href="/img/index/logo.jpg" />
-<link href="/plugin/cropperjs-master/resource/cropper.css" rel="stylesheet">
+<link href="/plugin/cropperjs-master/resource/cropper.css"
+	rel="stylesheet">
 <link href="/plugin/toastr/css/toastr.min.css" rel="stylesheet">
 <link href="/css/basic/style.css" rel="stylesheet" />
 <link href="/plugin/bootstrap-3.3.7-dist/css/bootstrap.min.css"
@@ -63,6 +64,7 @@ img {
 <script src="/plugin/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
 <script src="/plugin/toastr/js/toastr.min.js"></script>
 <script src="/plugin/cropperjs-master/resource/cropper.js"></script>
+<script src="/plugin/layer/layer.min.js"></script>
 <script>
 	var image = document.getElementById('image');
 	var cropper = new Cropper(image, {
@@ -111,6 +113,7 @@ img {
 				alert(originFileName);
 				uploadFileName =  originFileName;
 			}
+			var loading;
 			var formData = new FormData();
 			formData.append('avator', blob, uploadFileName);
 			$.ajax('/web/guy/headPic', {
@@ -119,7 +122,13 @@ img {
 				dataType : 'json',
 				processData : false,
 				contentType : false,
+	            beforeSend : function() {
+	                     loading = layer.load(2, {
+	                          shade: [0.1,'#fff'] //0.1透明度的白色背景
+	                        });
+	                },
 				success : function(data) {
+					layer.close(loading);
 					console.log('Upload success');
 					var winparent = window.parent; //向外层iframe发送修改的图片信息
 					var postdata = {

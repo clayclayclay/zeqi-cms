@@ -11,9 +11,9 @@
 
 <link rel="shortcut icon" href="/img/index/logo.jpg"></link>
 <link href="/plugin/bootstrap-3.3.7-dist/css/bootstrap.min.css"
-    rel="stylesheet">
+	rel="stylesheet">
 <link href="/plugin/font-awesome-4.7.0/css/font-awesome.min.css"
-    rel="stylesheet">
+	rel="stylesheet">
 <link href="/css/basic/animate.css" rel="stylesheet"></link>
 <link href="/css/basic/style.css" rel="stylesheet"></link>
 <link href="/plugin/toastr/css/toastr.min.css" rel="stylesheet"></link>
@@ -30,17 +30,16 @@
 					</div>
 					<div>
 						<div class="ibox-content no-padding border-left-right">
-						
-						
-					
+
+
+
 							<a href="#modal-form" data-toggle="modal" style="display: block;"
-								title="修改个性图片"> <!-- 个人上传个性头像 --> 
-								<img alt="image"
+								title="修改个性图片"> <!-- 个人上传个性头像 --> <img alt="image"
 								class="img-responsive backImg"
 								th:src="${studentInfo.backgroundPic}">
 							</a>
 						</div>
-						
+
 						<div class="ibox-content profile-content">
 							<!-- 成员姓名 -->
 							<h4>
@@ -70,16 +69,23 @@
 			</div>
 			<div class="col-md-3 col-md-offset-1">
 				<div class="ibox-content text-center">
-					<h1><span th:text="${studentInfo.name}"></span></h1>
+					<h1>
+						<span th:text="${studentInfo.name}"></span>
+					</h1>
 					<div class="m-b-sm">
-                    <img alt="image" class="img-circle userheadImg" th:src="${studentInfo.headPic}">
+						<img alt="image" class="img-circle userheadImg"
+							th:src="${studentInfo.headPic}">
 					</div>
-					<p class="font-bold"><span th:text="${studentInfo.position}"></span></p>
+					<p class="font-bold">
+						<span th:text="${studentInfo.position}"></span>
+					</p>
 					<address>
 						<!-- 电话号码 -->
-						<abbr title="Phone">Tel:</abbr><span th:text="${studentInfo.phone}"></span>
+						<abbr title="Phone">Tel:</abbr><span
+							th:text="${studentInfo.phone}"></span>
 						<!-- 邮箱 -->
-						<br><span th:text="${studentInfo.emailAddress}"></span><br>
+						<br>
+						<span th:text="${studentInfo.emailAddress}"></span><br>
 					</address>
 				</div>
 			</div>
@@ -105,7 +111,7 @@
 						<div class="col-sm-8 col-sm-offset-2">
 							<div class="addimg" title="修改个性头像">
 								<!-- 填入用户的头像，如果没有就使用初始头像 -->
-                            <img th:src="${studentInfo.backgroundPic}" class="userhead">
+								<img th:src="${studentInfo.backgroundPic}" class="userhead">
 							</div>
 							<input type="file" id="upimg" />
 							<button class="btn btn-success upbtn" type="button"
@@ -129,10 +135,13 @@
 
 	<script src="/plugin/toastr/js/toastr.min.js"></script>
 	<script type="text/javascript"></script>
-
+	<script src="/plugin/layer/layer.min.js"></script>
+	
 	<script type="text/javascript">
 		$("#upimg")
-				.on("change", function() { //上传图片同时预览上传的图片
+				.on(
+						"change",
+						function() { //上传图片同时预览上传的图片
 							// Get a reference to the fileList
 							var files = !!this.files ? this.files : [];
 							var nextElement = $(".addimg").nextAll("i");
@@ -186,7 +195,7 @@
 			var file = $("#upimg")[0].files[0];
 			var formData = new FormData();
 			formData.append('background', file);
-
+			var loading;
 			$.ajax({
 				url : '/web/guy/backgroundPic',
 				type : 'post',
@@ -194,8 +203,14 @@
 				cache : false,
 				data : formData,
 				processData : false,
-				contentType : false
+				contentType : false,
+                beforeSend : function() {
+                    loading = layer.load(2, {
+                         shade: [0.1,'#fff'] //0.1透明度的白色背景
+                       });
+               }
 			}).done(function(data) { //上传成功(需要接受来自后端的新的图片的url)
+				layer.close(loading);
 				if (data.status == true) {
 					toastr.success('图片修改成功');
 					$(".close").trigger('click');

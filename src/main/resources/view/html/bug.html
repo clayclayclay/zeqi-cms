@@ -82,6 +82,7 @@
 <!-- 自定义js -->
 <script src="/js/basic/content.js"></script>
 <script src="/plugin/sweetalert/js/sweetalert.min.js"></script>
+<script src="/plugin/layer/layer.min.js"></script>
 
 
 
@@ -194,7 +195,7 @@
 		if (title == "" || textView == "") {
 			swal("伙计:)", "这算什么Bug？？", "error");
 			return false;
-		}
+		};
 
 		/*
 		if (isOk == false) {
@@ -202,6 +203,8 @@
 			return false;
 		}
 */
+
+        var loading;
 		$.ajax({
 			url : '/web/bug',
 			type : 'post',
@@ -211,10 +214,14 @@
 				"content" : textView
 			},
 			beforeSend : function() {
-				$('.loader').css("visibility", "visible");
+			//	$('.loader').css("visibility", "visible");
+				 loading = layer.load(2, {
+			          shade: [0.1,'#fff'] //0.1透明度的白色背景
+			        });
 			}
 		}).done(function(data) {
-			$('.loader').css("visibility", "hidden");
+		//	$('.loader').css("visibility", "hidden");
+		  layer.close(loading);     
 			if (data.status == true) {
 				swal({
 					title : "已经通知程序猿啦 :)",
@@ -237,6 +244,7 @@
 
 		return false;
 	});
+	
 </script>
 
 
