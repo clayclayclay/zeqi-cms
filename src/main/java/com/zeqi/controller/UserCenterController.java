@@ -216,7 +216,7 @@ public class UserCenterController {
 		request.getSession().removeAttribute("student_info");
 		request.getSession().removeAttribute("is_login");
 		try {
-			response.sendRedirect("/index.html");
+			response.sendRedirect("/");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
