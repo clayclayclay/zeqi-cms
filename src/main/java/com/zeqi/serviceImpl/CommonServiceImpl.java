@@ -19,12 +19,14 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -97,14 +99,22 @@ public class CommonServiceImpl implements CommonService {
 	public BasicJson bugCommit(HttpServletRequest request) {
 		BasicJson basicJson = new BasicJson(false);
 		try {
-			SimpleMailMessage smm = new SimpleMailMessage();
-			smm.setFrom("qq84907952@gmail.com");
-			smm.setTo("max.lv@sap.com");
+			MimeMessage mimeMessage = emailSender.createMimeMessage();
+			MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, false, "utf-8");
+			mimeMessage.setContent(request.getParameter("content"), "text/html");
+			helper.setTo("max.lv@sap.com");
 			String subject = ((StudentInfo) request.getSession().getAttribute("student_info")).getName() + ">>>" + request.getParameter("title");
-			System.out.println(subject);
-			smm.setSubject(subject);
-			smm.setText(request.getParameter("content"));
-			emailSender.send(smm);
+			helper.setSubject(subject);
+			helper.setFrom("qq84907952@gmail.com");
+			emailSender.send(mimeMessage);
+//			SimpleMailMessage smm = new SimpleMailMessage();
+//			smm.setFrom("qq84907952@gmail.com");
+//			smm.setTo("max.lv@sap.com");
+//			String subject = ((StudentInfo) request.getSession().getAttribute("student_info")).getName() + ">>>" + request.getParameter("title");
+//			System.out.println(subject);
+//			smm.setSubject(subject);
+//			smm.setText(request.getParameter("content"));
+//			emailSender.send(smm);
 			System.out.println("done");
 			basicJson.setStatus(true);
 			basicJson.getErrMsg().setMessage("已通知到程序猿啦！");

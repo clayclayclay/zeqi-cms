@@ -63,6 +63,9 @@
 <!-- 自定义js -->
 <script src="/js/basic/content.js"></script>
 <script src="/plugin/sweetalert/js/sweetalert.min.js"></script>
+
+
+
 <script type="text/javascript">
 	//Most options demonstrate the non-default behavior
 
@@ -153,6 +156,18 @@
 	//alert(simplemde.options.previewRender("This is *example* Markdown"));
 	//alert(simplemde.markdown(simplemde.value()));
 
+	function simpleLoad(btn, state) {
+		if (state) {
+			btn.children().addClass('fa-spin');
+			btn.contents().last().replaceWith(" Loading");
+		} else {
+			setTimeout(function() {
+				btn.children().removeClass('fa-spin');
+				btn.contents().last().replaceWith(" Refresh");
+			}, 2000);
+		}
+	}
+
 	$("#upMarkDown").click(function(event) {
 		var title = $("#zeqi-markdown-title").val();
 		var textView = simplemde.markdown(simplemde.value());
@@ -199,4 +214,7 @@
 		return false;
 	});
 </script>
+
+
+
 </html>
