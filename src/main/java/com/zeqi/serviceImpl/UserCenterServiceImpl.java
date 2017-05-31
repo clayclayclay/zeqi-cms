@@ -123,7 +123,7 @@ public class UserCenterServiceImpl implements UserCenterService {
         BasicJson basicJson = new BasicJson(false);
         String oldPassword = map.get("oldPassword");
         String newPassword = map.get("newPassword");
-        StudentAccount studentAccount = (StudentAccount) request.getSession().getAttribute("student_account");
+        StudentAccount studentAccount = (StudentAccount) basicDao.get(StudentAccount.class, ((StudentInfo) request.getSession().getAttribute("student_info")).getStuId());
         if (studentAccount.getPassword().equals(oldPassword)) {
             studentAccount.setPassword(newPassword);
             boolean isUpdate = basicDao.save(studentAccount);

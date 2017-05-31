@@ -1,10 +1,8 @@
 package com.zeqi.controller;
 
-import com.zeqi.database.BookLoan;
 import com.zeqi.database.StudentAccount;
 import com.zeqi.database.StudentInfo;
 import com.zeqi.dataconfig.UserConfig;
-import com.zeqi.dto.ArticleIndexDTO;
 import com.zeqi.json.BasicJson;
 import com.zeqi.service.UserCenterService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +16,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -291,10 +288,5 @@ public class UserCenterController {
 	public void test(MultipartHttpServletRequest multipartHttpServletRequest) {
 		MultipartFile file = multipartHttpServletRequest.getFile("croppedImage");
 		System.out.println(file.getOriginalFilename());
-	}
-	
-	@RequestMapping("/s")
-	public String s(Map<String, Object> model) {
-		return "index";
 	}
 }
