@@ -101,21 +101,12 @@ public class CommonServiceImpl implements CommonService {
 		try {
 			MimeMessage mimeMessage = emailSender.createMimeMessage();
 			MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, false, "utf-8");
-			mimeMessage.setContent(request.getParameter("content"), "text/html");
+			mimeMessage.setContent(request.getParameter("content"), "text/html; charset=utf-8");
 			helper.setTo("max.lv@sap.com");
 			String subject = ((StudentInfo) request.getSession().getAttribute("student_info")).getName() + ">>>" + request.getParameter("title");
 			helper.setSubject(subject);
 			helper.setFrom("qq84907952@gmail.com");
 			emailSender.send(mimeMessage);
-//			SimpleMailMessage smm = new SimpleMailMessage();
-//			smm.setFrom("qq84907952@gmail.com");
-//			smm.setTo("max.lv@sap.com");
-//			String subject = ((StudentInfo) request.getSession().getAttribute("student_info")).getName() + ">>>" + request.getParameter("title");
-//			System.out.println(subject);
-//			smm.setSubject(subject);
-//			smm.setText(request.getParameter("content"));
-//			emailSender.send(smm);
-			System.out.println("done");
 			basicJson.setStatus(true);
 			basicJson.getErrMsg().setMessage("已通知到程序猿啦！");
 		} catch (Exception e) {
