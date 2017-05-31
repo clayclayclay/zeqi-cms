@@ -4,13 +4,13 @@
 <meta charset="UTF-8">
 <title>markdown-editor test02</title>
 <link rel="stylesheet"
-    href="/plugin/NextStepWebs-simplemde-markdown-editor/resource/simplemde.min.css" />
+	href="/plugin/NextStepWebs-simplemde-markdown-editor/resource/simplemde.min.css" />
 <link rel="stylesheet"
 	href="/plugin/other-plugin/css/hightlight-github.min.css">
 <link href="/plugin/bootstrap-3.3.7-dist/css/bootstrap.min.css"
-    rel="stylesheet">
+	rel="stylesheet">
 <link href="/plugin/font-awesome-4.7.0/css/font-awesome.min.css"
-    rel="stylesheet">
+	rel="stylesheet">
 <link href="/plugin/sweetalert/css/sweetalert.css" rel="stylesheet">
 <link href="/css/basic/animate.css" rel="stylesheet" />
 <link href="/css/basic/style.css" rel="stylesheet" />
@@ -45,21 +45,23 @@
 <body>
 	<div style="margin: 10px 10px 0 10px;">
 		<div class="title-input-div">
-			<input type="hidden" id="origin-title"
-				th:value="${article.title}"> <input type="text"
-				name="title" id="zeqi-markdown-title" class="title-input-input"
-				placeholder="别那么懒，起个名字吧...">
+			<input type="hidden" id="origin-title" th:value="${article.title}">
+			<input type="text" name="title" id="zeqi-markdown-title"
+				class="title-input-input" placeholder="别那么懒，起个名字吧...">
 		</div>
 		<textarea name="article" id="zeqi-markdown-content"></textarea>
 		<input type="hidden" id="origin-content" th:value="${article.content}">
 		<button class="btn btn-primary submit" id="upMarkDown" type="submit"
 			style="">提交</button>
 	</div>
+	<div style="margin: 20px 0 0 20px;">
+		<a href="https://guides.github.com/features/mastering-markdown/"
+			target="blank">不会markdown你怎么装逼？</a>
+	</div>
 </body>
 <script
 	src="/plugin/NextStepWebs-simplemde-markdown-editor/resource/simplemde.min.js"></script>
-<script
-	src="/plugin/other-plugin/js/hightlight.min.js"></script>
+<script src="/plugin/other-plugin/js/hightlight.min.js"></script>
 <!-- 全局js -->
 <script src="/js/basic/jquery.min.js"></script>
 <script src="/plugin/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
@@ -73,7 +75,7 @@
 	var originTitle = document.getElementById("origin-title");
 	var titleData = originTitle.value;
 	var contentData = originContent.value;
-	
+
 	und.convert(titleData, function(err, markdown) {
 		var title = document.getElementById("zeqi-markdown-title");
 		title.value = markdown;
@@ -187,9 +189,9 @@
 		  return false;
 		}
 		 */
-		 
-		 var path = window.location.pathname;
-		 var id = path.split("/")[path.split("/").length - 1];
+
+		var path = window.location.pathname;
+		var id = path.split("/")[path.split("/").length - 1];
 		$.ajax({
 			url : '/web/article/' + id,
 			type : 'put',
