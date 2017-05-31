@@ -14,8 +14,7 @@ function openNew(){
 	document.body.appendChild(oMask);
 	var oLogin=document.createElement("div");
 	oLogin.id="login";
-	oLogin.innerHTML="<div class='loginCon'><p class='log'><i class='icon-cloud'></i>Login</p><div class='ueserInput'><p><i class='icon-user'></i><input type='text' id='ueser'></p></div><div class='ueserInput'><p><i class='icon-lock'></i><input type='password' id='passwords'></p></div><div class='remberPar'><div id='rember'><div id='backWhite'></div><div id='remberButton'></div></div> <span>remember</span></div><button id='enter'>Login</button></div>";
-	document.body.appendChild(oLogin);
+	oLogin.innerHTML="<div class='loginCon'><p class='log'><i class='icon-cloud'></i>Login</p><div class='ueserInput'><p><i class='icon-user'></i><input type='text' id='ueser'></p></div><div class='ueserInput'><p><i class='icon-lock'></i><input type='password' id='passwords'></p></div><div class='remberPar'><div id='rember'><div id='backWhite'></div><div id='remberButton'></div></div> <span>remember</span></div><button id='enter'>Login</button></div>";	document.body.appendChild(oLogin);
 
 	// 获取登陆框的宽和高
 	var dHeight=oLogin.offsetHeight;
@@ -130,15 +129,14 @@ $().ready(function(){
 	$("#section1").css('height', Lheight);
 
 	var oBtn=document.getElementById("login_out");
-	// 点击登录按钮
-	oBtn.onclick=function(){
-		openNew();
-		return false;
+	if (oBtn != null) {
+		// 点击登录按钮
+		oBtn.onclick=function(){
+			openNew();
+			return false;
+		}	
 	}
-
 	var articleHeight =30;
-
-
 	window.addEventListener('scroll',scrollHandler);
 	var direction='bottom';                   // 实现四个部门块的上下移动
 	(function(){

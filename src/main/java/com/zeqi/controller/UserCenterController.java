@@ -214,9 +214,9 @@ public class UserCenterController {
 	@RequestMapping(value = "/exit", method = RequestMethod.GET)
 	public void exit(HttpServletRequest request, HttpServletResponse response) {
 		request.getSession().removeAttribute("student_info");
-		request.getSession().removeAttribute("student_account");
+		request.getSession().removeAttribute("is_login");
 		try {
-			response.sendRedirect("/");
+			response.sendRedirect("/index.html");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

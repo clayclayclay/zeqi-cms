@@ -112,11 +112,12 @@
 	<span>designed by ZeQi team</span>
 </section>
 <input type="hidden" id="user_avatar" th:value="${user_avatar}">
-<script>
+<script th:inline="javascript">
 //判断是否已经登陆
 var is_login = [[${isLogin}]];
 var user_avatar = document.getElementById("user_avatar").value;
 if (is_login) {
+	$('.login_out').css('','');
     $('#par').empty();
     $('#par').html("<a><img class='user' src=" + user_avatar + " id='user'></a>");
     $('#par a').attr('href',"/web/guy");
