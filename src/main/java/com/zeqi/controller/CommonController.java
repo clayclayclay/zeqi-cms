@@ -47,5 +47,15 @@ public class CommonController {
 	public BasicJson bugCommit(HttpServletRequest request) {
 		return commonService.bugCommit(request);
 	}
+	
+	@RequestMapping(value = "/web/record", method = RequestMethod.GET)
+	public String recordActivity(Map<String, Object> model, HttpServletRequest request) {
+		model.put("recordList", commonService.queryRecordActivity());
+		return "user/index_time";
+	}
+	
+		
+	
+	
 
 }

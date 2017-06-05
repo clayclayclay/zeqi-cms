@@ -21,6 +21,8 @@ public interface BasicDao {
     boolean save(Object obj);
 
     boolean delete(String[] id, Class<?> entityType);
+    
+    boolean delete(Object obj);
 
     boolean deleteById(String table, String key, String[] id);
     

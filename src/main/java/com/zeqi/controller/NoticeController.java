@@ -1,7 +1,5 @@
 package com.zeqi.controller;
 
-import com.zeqi.dao.BasicDao;
-import com.zeqi.database.Notice;
 import com.zeqi.json.BasicJson;
 import com.zeqi.service.NoticeService;
 import org.springframework.beans.factory.annotation.Autowired;

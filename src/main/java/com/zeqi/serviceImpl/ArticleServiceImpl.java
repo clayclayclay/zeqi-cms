@@ -10,7 +10,8 @@ import com.zeqi.dto.ArticleEntityDTO;
 import com.zeqi.dto.ArticleIndexDTO;
 import com.zeqi.json.BasicJson;
 import com.zeqi.service.ArticleService;
-import com.zeqi.util.DateConvertUtil;
+import com.zeqi.service.CommonService;
+import com.zeqi.util.DateUtil;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,6 +36,8 @@ public class ArticleServiceImpl implements ArticleService {
 	private ArticleConfig articleConfig;
 	@Autowired
 	private ArticleDao articleDao;
+	@Autowired
+	private CommonService commonService;
 
 	/**
 	 * 作用：发布文章
@@ -49,10 +52,11 @@ public class ArticleServiceImpl implements ArticleService {
 		boolean isWrited;
 		article.setTitle(request.getParameter("title"));
 		article.setContent(request.getParameter("content"));
-		article.setCreateTime(DateConvertUtil.getNowLongTime());
+		article.setCreateTime(DateUtil.getNowLongTime());
 		article.setStudentInfo((StudentInfo)basicDao.get(StudentInfo.class, ((StudentInfo) request.getSession().getAttribute("student_info")).getStuId()));
 		article.setCommentCount(0);
 		isWrited = basicDao.save(article);
+		commonService.recordActivity((StudentInfo) request.getSession().getAttribute("student_info"), "发布文章", request.getParameter("title"));
 		if (isWrited) {
 			basicJson.setStatus(true);
 			basicJson.getErrMsg().setCode("200");
@@ -129,7 +133,7 @@ public class ArticleServiceImpl implements ArticleService {
 			articleEntityDTO.setArticleId(article.getId());
 			articleEntityDTO.setTitle(article.getTitle());
 			articleEntityDTO.setCommentCount(article.getCommentCount());
-			articleEntityDTO.setWriteTime(DateConvertUtil.longToString(article.getCreateTime()));
+			articleEntityDTO.setWriteTime(DateUtil.longToString(article.getCreateTime()));
 			articleEntityDTO.setContent(article.getContent());
 			Map<String, String> articleConfig = new HashMap<String, String>();
 			articleConfig.put("postArticleUrl", this.articleConfig.getApiConfig().get("postArticleUrl"));
@@ -162,7 +166,7 @@ public class ArticleServiceImpl implements ArticleService {
 			articleDTO.setTitle(article.getTitle());
 			articleDTO.setAuthor(article.getStudentInfo().getName());
 			articleDTO.setCommentCount(article.getCommentCount());
-			articleDTO.setWriteTime(DateConvertUtil.longToString(article.getCreateTime()));
+			articleDTO.setWriteTime(DateUtil.longToString(article.getCreateTime()));
 			articleDTOList.add(articleDTO);
 		}
 		Double articleNum = Double.valueOf(basicDao.getTotalCount(Article.class));
@@ -200,7 +204,7 @@ public class ArticleServiceImpl implements ArticleService {
 			articleDTO.setTitle(article.getTitle());
 			articleDTO.setAuthor(article.getStudentInfo().getName());
 			articleDTO.setCommentCount(article.getCommentCount());
-			articleDTO.setWriteTime(DateConvertUtil.longToString(article.getCreateTime()));
+			articleDTO.setWriteTime(DateUtil.longToString(article.getCreateTime()));
 			articleDTOList.add(articleDTO);
 		}
 		Double articleNum = Double.valueOf(basicDao.getTotalCount("studentInfo.stuId", stuId, Article.class));

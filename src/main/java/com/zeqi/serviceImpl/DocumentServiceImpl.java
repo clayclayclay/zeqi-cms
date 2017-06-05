@@ -14,7 +14,7 @@ import com.zeqi.service.CommonService;
 import com.zeqi.service.DocumentService;
 import com.zeqi.util.AmazonS3ConnectionUtil;
 import com.zeqi.util.CommonUtil;
-import com.zeqi.util.DateConvertUtil;
+import com.zeqi.util.DateUtil;
 
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,7 +72,7 @@ public class DocumentServiceImpl implements DocumentService {
         if ((keyName = commonService.uploadObject(fileMap.get("document"), amazonS3ConnectionUtil.getBucketDocumentName())) != null) {
         	documentInfo = new DocumentInfo();
         	documentInfo.setDocumentName(fileMap.get("document").getOriginalFilename());
-        	documentInfo.setCreateTime(DateConvertUtil.getNowLongTime());
+        	documentInfo.setCreateTime(DateUtil.getNowLongTime());
         	documentInfo.setStudentInfo((StudentInfo) multipartHttpServletRequest.getSession().getAttribute("student_info"));
         	String documentPath = documentConfig.getResourceConfig().get("downloadDocumentPath") + keyName;
         	documentInfo.setDocumentPath(documentPath);
@@ -169,7 +169,7 @@ public class DocumentServiceImpl implements DocumentService {
 			documentEntityDTO.setDownloadUrl(documentInfo.getDocumentPath());
 			documentEntityDTO.setDocumentName(documentInfo.getDocumentName());
 			documentEntityDTO.setStuName(documentInfo.getStudentInfo().getName());
-			documentEntityDTO.setUploadTime(DateConvertUtil.longToString(documentInfo.getCreateTime()));
+			documentEntityDTO.setUploadTime(DateUtil.longToString(documentInfo.getCreateTime()));
 			documentEntityDTOList.add(documentEntityDTO);
 		}
 		Double documentNum = Double.valueOf(basicDao.getTotalCount(DocumentInfo.class));

@@ -17,6 +17,7 @@
 package com.zeqi.util;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -28,7 +29,7 @@ import java.util.Date;
   * @since 
   */
 
-public class DateConvertUtil {
+public class DateUtil {
 	
 	private final static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
@@ -43,6 +44,24 @@ public class DateConvertUtil {
 	public static long getNowLongTime() {
 		return new Date().getTime();
 	}
-
+	
+	public static int getYear() {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(new Date());
+		return calendar.get(Calendar.YEAR);
+	}
+	
+	public static int getMonth() {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(new Date());
+		return calendar.get(Calendar.MONTH);
+	}
+	
+	public static int getDayOfYear() {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(new Date());
+//		Calendar.
+		return calendar.get(Calendar.DAY_OF_YEAR);
+	}
 }
  

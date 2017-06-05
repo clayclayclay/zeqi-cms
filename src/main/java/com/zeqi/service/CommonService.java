@@ -16,14 +16,15 @@
  
 package com.zeqi.service;
 
-import java.io.IOException;
+
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.web.multipart.MultipartFile;
 
-import com.amazonaws.AmazonServiceException;
-import com.amazonaws.SdkClientException;
+import com.zeqi.database.StudentInfo;
+import com.zeqi.dto.WorkActivityEntityDTO;
 import com.zeqi.json.BasicJson;
 
 /**
@@ -39,6 +40,12 @@ public interface CommonService {
 	public String uploadObject(MultipartFile multipartFile, String location);
 
 	public BasicJson bugCommit(HttpServletRequest request);
+	
+	public boolean recordActivity(StudentInfo studentInfo, String operation, String entityName);
+	
+	public List<WorkActivityEntityDTO> queryRecordActivity();
+	
+	public boolean updateRecord();
 	
 }
  

@@ -16,7 +16,9 @@
 package com.zeqi.serviceImpl;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.mail.internet.MimeMessage;
@@ -24,7 +26,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -34,11 +35,15 @@ import com.amazonaws.AmazonServiceException;
 import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.zeqi.dao.BasicDao;
 import com.zeqi.database.StudentInfo;
+import com.zeqi.database.WorkActivityInfo;
+import com.zeqi.dto.WorkActivityEntityDTO;
 import com.zeqi.json.BasicJson;
 import com.zeqi.service.CommonService;
 import com.zeqi.util.AmazonS3ConnectionUtil;
 import com.zeqi.util.CommonUtil;
+import com.zeqi.util.DateUtil;
 
 /**
  * ClassName: CommonServiceImpl Description: TODO
@@ -53,6 +58,9 @@ public class CommonServiceImpl implements CommonService {
 	@Autowired
 	@Lazy
 	private AmazonS3ConnectionUtil amazonS3ConnectionUtil;
+	
+	@Autowired
+	private BasicDao basicDao;
 
 	@Autowired
 	private JavaMailSender emailSender;
@@ -114,5 +122,83 @@ public class CommonServiceImpl implements CommonService {
 			basicJson.getErrMsg().setMessage("提交失败");
 		}
 		return basicJson;
+	}
+
+	
+	 /**
+	  * Title: recordActivity
+	  * Description: TODO
+	  * @param stuId
+	  * @param operation
+	  * @param entityId
+	  * @return (describe the param)
+	  * @see com.zeqi.service.CommonService#recordActivity(java.lang.String, java.lang.String, java.lang.String)
+	  */
+	 
+	@Override
+	public boolean recordActivity(StudentInfo studentInfo, String operation, String entityName) {
+		WorkActivityInfo workActivityInfo = new WorkActivityInfo();
+		workActivityInfo.setStudentInfo(studentInfo);
+		workActivityInfo.setTitle(operation);
+		String description = studentInfo.getName() + operation + entityName;
+		workActivityInfo.setDescription(description);
+		workActivityInfo.setTime(0);
+		workActivityInfo.setRecordTime(DateUtil.getNowLongTime());
+		if (basicDao.save(workActivityInfo)) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
+	
+	 /**
+	  * Title: queryRecordActivity
+	  * Description: TODO
+	  * @return (describe the param)
+	  * @see com.zeqi.service.CommonService#queryRecordActivity()
+	  */
+	 
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<WorkActivityEntityDTO> queryRecordActivity() {
+		List<WorkActivityInfo> workActivityInfoList = (List<WorkActivityInfo>) basicDao.getAll("WorkActivityInfo");
+		List<WorkActivityEntityDTO> workActivityEntityDTOList = new ArrayList<WorkActivityEntityDTO>();
+		for (WorkActivityInfo workActivityInfo : workActivityInfoList) {
+			WorkActivityEntityDTO workActivityEntityDTO = new WorkActivityEntityDTO();
+			workActivityEntityDTO.setTitle(workActivityInfo.getTitle());
+			workActivityEntityDTO.setDescription(workActivityInfo.getDescription());
+			workActivityEntityDTO.setRecordTime(DateUtil.longToString(workActivityInfo.getRecordTime()));
+			workActivityEntityDTO.setStuName(workActivityInfo.getStudentInfo().getNickName());
+			workActivityEntityDTOList.add(workActivityEntityDTO);
+		}
+		return workActivityEntityDTOList;
+	}
+
+	
+	 /**
+	  * Title: updateRecord
+	  * Description: TODO
+	  * @return (describe the param)
+	  * @see com.zeqi.service.CommonService#updateRecord()
+	  */
+	 
+	@SuppressWarnings("unchecked")
+	@Override
+	public boolean updateRecord() {
+		List<WorkActivityInfo> workActivityInfoList = (List<WorkActivityInfo>) basicDao.getAll("WorkActivityInfo");
+		for (WorkActivityInfo workActivityInfo : workActivityInfoList) {
+			if (workActivityInfo.getTime() == 1) {
+				if (!basicDao.delete(workActivityInfo)) {
+					return false;
+				}
+			}
+			else if (workActivityInfo.getTime() == 0) {
+				workActivityInfo.setTime(1);
+				basicDao.save(workActivityInfo);
+			}
+		}
+		return true;
 	}
 }

@@ -181,6 +181,20 @@ public class BasicDaoImpl implements BasicDao {
 			return false;
 		}
 	}
+	
+	
+	@Override
+	public boolean delete(Object obj) {
+		Session session = getSession();
+		try {
+			session.delete(obj);
+			session.flush();
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+	
 
 	/**
 	 * 删除记录
@@ -315,6 +329,16 @@ public class BasicDaoImpl implements BasicDao {
 		criteriaCount.setProjection(Projections.rowCount());
 		return (Long) criteriaCount.uniqueResult();
 	}
+	
+	 /**
+	  * Title: delete
+	  * Description: TODO
+	  * @param obj
+	  * @return (describe the param)
+	  * @see com.zeqi.dao.BasicDao#delete(java.lang.Object)
+	  */
+	 
+
 
 	
 
